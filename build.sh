@@ -1,5 +1,20 @@
 #!/bin/bash
 
+function exit_if_var_missing(){
+
+    if [ -z $1 ]
+    then
+
+	echo 'missing required environment variable; build aborted.'
+	exit 2;
+    fi
+}
+
+exit_if_var_missing $TEMPLATE_PATH
+exit_if_var_missing $OUTPUT_PATH
+exit_if_var_missing $STYLES_GLOB
+
+
 bundlefile='app/app.js'
 bundle_head='bundle_head.js'
 bundle_main='bundle_main.js'
@@ -20,22 +35,9 @@ build_hash_pattern='||build_hash||'
 tmp_page='app/tmp.html'
 rm -f $tmp_page
 
-if [ -z $TEMPLATE_PATH ]
-then
-
-    echo 'missing value for TEMPLATE_PATH'
-    exit 2
-fi
-
-if [ -z $OUTPUT_PATH ]
-then
-
-    echo 'missing value for OUTPUT_PATH'
-    exit 2
-fi
-
-
 sed -e "s/$build_hash_pattern/$this_commit/g" $TEMPLATE_PATH > $tmp_page
 
 cp $tmp_page $OUTPUT_PATH
 rm $tmp_page
+
+cp $STYLES_GLOB $( dirname $OUTPUT_PATH )

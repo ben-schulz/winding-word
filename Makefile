@@ -12,6 +12,7 @@ NEED_ENTR = "'make watch' requires entr to be installed."
 BUILD = "./build.sh"
 OUTPUT_PATH = "$(PWD)/app/reader.html"
 TEMPLATE_PATH = "$(PWD)/src/reader.html.template"
+STYLES_GLOB = "$(PWD)/style/*.css"
 
 watch:
 
@@ -22,7 +23,7 @@ test:
 	$(BROWSE) $(TESTPAGE)
 
 app:
-	env OUTPUT_PATH=$(OUTPUT_PATH) TEMPLATE_PATH=$(TEMPLATE_PATH) $(BUILD)
+	env OUTPUT_PATH=$(OUTPUT_PATH) TEMPLATE_PATH=$(TEMPLATE_PATH) STYLES_GLOB=$(STYLES_GLOB) $(BUILD)
 	$(BROWSE) $(OUTPUT_PATH)
 
 .PHONY: watch test app

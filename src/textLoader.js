@@ -22,6 +22,7 @@ class TextLoader{
 	this.onload = null;
 
 	this.element = document.createElement( "div" );
+	this.element.classList.add( "textLoader" );
 
 	this.upload = document.createElement( "input" );
 	this.upload.type = "file";

@@ -1,1 +1,2 @@
 src/textLoader.js
+src/main.js
