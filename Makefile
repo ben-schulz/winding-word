@@ -9,6 +9,10 @@ ENTR = entr
 ENTR_FLAGS = -c
 NEED_ENTR = "'make watch' requires entr to be installed."
 
+BUILD = "./build.sh"
+OUTPUT_PATH = "$(PWD)/app/reader.html"
+TEMPLATE_PATH = "$(PWD)/src/reader.html.template"
+
 watch:
 
 	which $(ENTR) || ( echo $(NEED_ENTR) && exit 1 )
@@ -17,4 +21,8 @@ watch:
 test:
 	$(BROWSE) $(TESTPAGE)
 
-.PHONY: watch test
+app:
+	env OUTPUT_PATH=$(OUTPUT_PATH) TEMPLATE_PATH=$(TEMPLATE_PATH) $(BUILD)
+	$(BROWSE) $(OUTPUT_PATH)
+
+.PHONY: watch test app
