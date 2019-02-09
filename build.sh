@@ -1,5 +1,10 @@
 #!/bin/bash
 
+required_vars=( $TEMPLATE_PATH
+		$OUTPUT_PATH
+		$STYLES_GLOB
+	      )
+
 function exit_if_var_missing(){
 
     if [ -z $1 ]
@@ -10,9 +15,10 @@ function exit_if_var_missing(){
     fi
 }
 
-exit_if_var_missing $TEMPLATE_PATH
-exit_if_var_missing $OUTPUT_PATH
-exit_if_var_missing $STYLES_GLOB
+for buildvar in $required_vars; do
+
+    exit_if_var_missing $buildvar
+done
 
 
 bundlefile='app/app.js'
