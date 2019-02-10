@@ -7,7 +7,6 @@ class TextLoader{
 
 	    var contents = event.target.result; 
 
-	    console.info( contents );
 	    if( null !== this.onload ){
 
 		this.onload( contents );
@@ -22,7 +21,7 @@ class TextLoader{
 	this.onload = null;
 
 	this.element = document.createElement( "div" );
-	this.element.classList.add( "textLoader" );
+	this.element.classList.add( "textloader" );
 
 	this.upload = document.createElement( "input" );
 	this.upload.type = "file";

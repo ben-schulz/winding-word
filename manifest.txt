@@ -1,2 +1,3 @@
 src/textLoader.js
+src/jsonPersister.js
 src/main.js

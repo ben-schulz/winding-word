@@ -1,7 +1,15 @@
-.textLoader{
+.textloader{
 
     width: 72px;
     height: 40px;
 
     background-color: #767fe6;
+}
+
+.jsondownloader{
+
+    width: 72px;
+    height: 40px;
+
+    background-color: red;
 }

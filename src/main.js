@@ -8,3 +8,9 @@ textLoader.onload = text => {
 
     document.body.appendChild( textNode );
 };
+
+
+var jsonDownloader = new JsonDownload();
+document.body.appendChild( jsonDownloader.element );
+
+jsonDownloader.value = { 'ok': 'neat', 'wow':'awesome' };
