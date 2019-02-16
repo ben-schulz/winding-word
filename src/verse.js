@@ -43,31 +43,31 @@ class RaggedArray{
 
 	lineEnds.push( currentEnd );
 
-	this._lineEnds = lineEnds;
+	return lineEnds;
     }
 
-    _calculateLineIndices(){
+    _calculateLineIndices( lineEnds ){
 
-	this._lines = [];
+	var lines = []
 
 	var lineNumber = 0;
-	while( lineNumber < this._lineEnds.length ){
+	while( lineNumber < lineEnds.length ){
 
 	    var startIndex = 0;
 	    for( var ix = 0; ix < lineNumber; ++ix ){
 
-		var nextLineLength = this._lineEnds[ ix ];
+		var nextLineLength = lineEnds[ ix ];
 		startIndex += nextLineLength;
 	    }
 
 	    var endIndex = (
-		startIndex + this._lineEnds[ lineNumber ] );
+		startIndex + lineEnds[ lineNumber ] );
 
-	    this._lines.push( [ startIndex, endIndex ] );
+	    lines.push( [ startIndex, endIndex ] );
 	    lineNumber += 1;
 	}
 
-	return this._flat.slice( startIndex, endIndex );
+	return lines;
     }
 
     constructor( text, lineLength=40 ){
@@ -77,7 +77,7 @@ class RaggedArray{
 
 	this.lineLength = lineLength;
 
-	this._calculateLineEndColumns( lineLength );
-	this._calculateLineIndices();
+	var lineEnds = this._calculateLineEndColumns( lineLength );
+	this._lines = 	this._calculateLineIndices( lineEnds );
     }
 }
