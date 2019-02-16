@@ -14,24 +14,18 @@ class RaggedArray{
 
     line( lineNumber ){
 
-	var startIndex = 0;
-	for( var ix = 0; ix < lineNumber; ++ix ){
+	if( lineNumber >= this._lines.length ){
 
-	    var nextLineLength = this._lines[ ix ];
-	    startIndex += nextLineLength;
+	    return null;
 	}
 
-	var endIndex = startIndex + this._lines[ lineNumber ];
+	var lineStart = this._lines[ lineNumber ][ 0 ];
+	var lineEnd = this._lines[ lineNumber ][ 1 ];
 
-	return this._flat.slice( startIndex, endIndex );
+	return this._flat.slice( lineStart, lineEnd );
     }
 
-    constructor( text, lineLength=40 ){
-
-	this._flat = text;
-	this._lexemes = Lexer.lex( text );
-
-	this.lineLength = lineLength;
+    _calculateLineEndColumns( lineLength ){
 
 	var lineEnds = [];
 	var currentEnd = 0;
@@ -49,6 +43,41 @@ class RaggedArray{
 
 	lineEnds.push( currentEnd );
 
-	this._lines = lineEnds;
+	this._lineEnds = lineEnds;
+    }
+
+    _calculateLineIndices(){
+
+	this._lines = [];
+
+	var lineNumber = 0;
+	while( lineNumber < this._lineEnds.length ){
+
+	    var startIndex = 0;
+	    for( var ix = 0; ix < lineNumber; ++ix ){
+
+		var nextLineLength = this._lineEnds[ ix ];
+		startIndex += nextLineLength;
+	    }
+
+	    var endIndex = (
+		startIndex + this._lineEnds[ lineNumber ] );
+
+	    this._lines.push( [ startIndex, endIndex ] );
+	    lineNumber += 1;
+	}
+
+	return this._flat.slice( startIndex, endIndex );
+    }
+
+    constructor( text, lineLength=40 ){
+
+	this._flat = text;
+	this._lexemes = Lexer.lex( text );
+
+	this.lineLength = lineLength;
+
+	this._calculateLineEndColumns( lineLength );
+	this._calculateLineIndices();
     }
 }
