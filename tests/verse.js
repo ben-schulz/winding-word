@@ -52,4 +52,20 @@ describe( "RaggedArray", function(){
 
     } );
 
+
+    describe( "lines", function(){
+
+	it( "returns an array with text of each line", function(){
+
+	    var lineLength = 9;
+	    var text = "the cat sat on the mat.";
+
+	    var page = new RaggedArray( text, lineLength );
+
+	    assert.equal( "the cat ", page.line( 0 ) );
+	    assert.equal( "sat on ", page.line( 1 ) );
+	    assert.equal( "the mat.", page.line( 2 ) );
+	} );
+    } );
+
 } );
