@@ -1,4 +1,4 @@
-describe( "RaggedArray", function(){
+describe( "Verse", function(){
 
     describe( "charAt", function(){
 
