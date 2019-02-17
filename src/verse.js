@@ -1,4 +1,4 @@
-class RaggedArray{
+class Verse{
 
     charAt( line, col ){
 

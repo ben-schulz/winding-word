@@ -6,7 +6,7 @@ describe( "RaggedArray", function(){
 
 	    var lineLength = 10;
 	    var text = "the cat sat on the mat.";
-	    var page = new RaggedArray( text, lineLength );
+	    var page = new Verse( text, lineLength );
 
 	    var firstLine = text.slice( 0, lineLength );
 	    var secondLine = text.slice( lineLength );
@@ -33,7 +33,7 @@ describe( "RaggedArray", function(){
 	    var lineLength = 10;
 	    var text = "ok";
 
-	    var page = new RaggedArray( text, lineLength );
+	    var page = new Verse( text, lineLength );
 
 	    assert.isTrue( null === page.charAt( 1, 0 ) );
 
@@ -44,7 +44,7 @@ describe( "RaggedArray", function(){
 	    var lineLength = 10;
 	    var text = "ok";
 
-	    var page = new RaggedArray( text, lineLength );
+	    var page = new Verse( text, lineLength );
 
 	    assert.isTrue( null === page.charAt( 0, 10 ) );
 
@@ -60,7 +60,7 @@ describe( "RaggedArray", function(){
 	    var lineLength = 9;
 	    var text = "the cat sat on the mat.";
 
-	    var page = new RaggedArray( text, lineLength );
+	    var page = new Verse( text, lineLength );
 
 	    assert.equal( "the cat ", page.line( 0 ) );
 	    assert.equal( "sat on ", page.line( 1 ) );
