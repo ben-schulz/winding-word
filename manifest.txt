@@ -1,3 +1,6 @@
 src/textLoader.js
 src/jsonPersister.js
+src/lexeme.js
+src/verse.js
+src/page.js
 src/main.js

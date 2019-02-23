@@ -4,9 +4,9 @@ document.body.appendChild( textLoader.element );
 
 textLoader.onload = text => {
 
-    var textNode = document.createTextNode( text );
+    var textNode = new TextPage( text )
 
-    document.body.appendChild( textNode );
+    document.body.appendChild( textNode.element );
 };
 
 

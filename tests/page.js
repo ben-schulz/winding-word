@@ -19,8 +19,6 @@ describe( "Page", function(){
 	    var word_line_0_pos_7 =
 		childNodes[ 0 ].childNodes[ 6 ].innerText;
 
-	    console.info( childNodes[ 0 ].childNodes );
-
 	    var word_line_1_pos_2 =
 		childNodes[ 1 ].childNodes[ 2 ].innerText;
 
