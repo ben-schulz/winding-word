@@ -56,11 +56,66 @@ var PageElementFactory = ( function(){
 
 class TextPage{
 
+    cursorDown(){
+
+	if( this.cursorLine < this.lineCount - 1 ){
+	    this.cursorLine += 1;
+	}
+    }
+
+    cursorUp(){
+
+	if( 0 < this.cursorLine ){
+	    this.cursorLine -= 1;
+	}
+    }
+
+    cursorRight(){
+
+	var lineLength = ( this._verses
+			   .lineText( this.cursorLine ).length );
+
+	if( this.cursorCol < lineLength - 1 ){
+
+	    this.cursorCol += 1;
+	}
+	else if( this.cursorLine < this.lineCount - 1 ){
+
+	    this.cursorCol = 0;
+	    this.cursorLine += 1;
+	}
+    }
+
+    cursorLeft(){
+
+	if( 0 < this.cursorCol ){
+
+	    this.cursorCol -= 1;
+	}
+
+	else if( 0 < this.cursorLine ){
+
+	    var lineLength = ( this._verses
+			   .lineText( this.cursorLine - 1 ).length );
+
+	    this.cursorCol = lineLength - 1;
+	    this.cursorLine -= 1;
+	}
+    }
+
+    get lineCount(){
+
+	return this._verses.lineCount;
+    }
+
     constructor( text, lineLength=40 ){
 
 	var verses = new Verse( text, lineLength );
 
+	this._verses = verses;
 	this.element = PageElementFactory.makePageElement( verses );
 
+	this.cursorLine = 0;
+	this.cursorCol = 0;
     }
 }
