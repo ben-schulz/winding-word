@@ -1,44 +1,73 @@
 var PageElementFactory = ( function(){
 
-    var lineElementType = "div";
+    var charElementType = "span";
     var wordElementType = "span";
+    var lineElementType = "div";
     var pageElementType = "div";
+
+    var makeCharElement = function( c ){
+
+	var charElement = document.createElement( charElementType );
+
+	charElement.appendChild(
+	    document.createTextNode( c ) );
+
+	return charElement;
+    };
 
     var makeWordElement = function( word ){
 
 	var wordElement = document.createElement( wordElementType );
 
-	wordElement.appendChild(
-	    document.createTextNode( word.text ) );
+	var charElements = [];
+	for( var ix = 0; ix < word.text.length; ++ix ){
 
-	return wordElement;
+	    var c = word.text[ ix ];
+	    var element = makeCharElement( c );
+	    wordElement.appendChild( element );
+	    charElements.push( element );
+	}
+
+	return [ wordElement, charElements ];
     };
 
     var makeLineElement = function( words ){
 
 	var lineElement = document.createElement( lineElementType );
 	
+	var charElements = [];
 	var wordElements = [];
 	for( var ix = 0; ix < words.length; ++ix ){
 
-	    var wordElement = makeWordElement( words[ ix ] );
+	    var childElements = makeWordElement( words[ ix ] );
+
+	    var wordElement = childElements[ 0 ];
+	    charElements = charElements.concat(
+		childElements[ 1 ] );
+
 	    lineElement.appendChild( wordElement );
 	}
 
-	return lineElement;
+	return [ lineElement, charElements ];
     };
 
     var makePageElement = function( lines ){
 
 	var pageElement = document.createElement( pageElementType );
 
+	var charLines = [];
 	lines.forEachWordLine( line => {
 
-	    pageElement.appendChild(
-		makeLineElement( line ) );
+	    var childElements = makeLineElement( line );
+	    var lineElement = childElements[ 0 ];
+	    var charElements = childElements[ 1 ];
+
+	    charLines.push( charElements );
+
+	    pageElement.appendChild( lineElement );
 	} );
 
-	return pageElement;
+	return [ pageElement, charLines ];
     };
 
     return {
@@ -68,22 +97,56 @@ class TextPage{
 		 .lineText( this.cursorLine ).length - 1 );
     }
 
+    charBoxAt( line, col ){
+
+	console.info( this._charBoxes[ line ][ col ] );
+
+	return this._charBoxes[ line ][ col ];
+    }
+
+    _setCursor(){
+
+	var line = this.cursorLine;
+	var col = this.cursorCol;
+	var charBox = this.charBoxAt( line, col );
+
+	if( charBox ){
+	    charBox.classList.add( "cursor" );
+	}
+    }
+
+    _clearCursor(){
+
+	var line = this.cursorLine;
+	var col = this.cursorCol;
+	var charBox = this.charBoxAt( line, col );
+
+	if( charBox ){
+	    charBox.classList.remove( "cursor" );
+	}
+    }
+
     cursorDown(){
 
+	this._clearCursor();
 	if( this.cursorLine < this.lineCount - 1 ){
 	    this.cursorLine += 1;
 	}
+	this._setCursor();
     }
 
     cursorUp(){
 
+	this._clearCursor();
 	if( 0 < this.cursorLine ){
 	    this.cursorLine -= 1;
 	}
+	this._setCursor();
     }
 
     cursorRight(){
 
+	this._clearCursor();
 	if( this.cursorCol < this.currentLineEndCol ){
 
 	    this.cursorCol += 1;
@@ -93,10 +156,12 @@ class TextPage{
 	    this.cursorCol = 0;
 	    this.cursorLine += 1;
 	}
+	this._setCursor();
     }
 
     cursorLeft(){
 
+	this._clearCursor();
 	if( 0 < this.cursorCol ){
 
 	    this.cursorCol -= 1;
@@ -107,6 +172,7 @@ class TextPage{
 	    this.cursorLine -= 1;
 	    this.cursorCol = this.currentLineEndCol;
 	}
+	this._setCursor();
     }
 
     constructor( text, lineLength=40 ){
@@ -114,7 +180,12 @@ class TextPage{
 	var verses = new Verse( text, lineLength );
 
 	this._verses = verses;
-	this.element = PageElementFactory.makePageElement( verses );
+
+	var childNodes =
+	    PageElementFactory.makePageElement( verses );
+
+	this.element = childNodes[ 0 ];
+	this._charBoxes = childNodes[ 1 ];
 
 	this.cursorLine = 0;
 	this.cursorCol = 0;

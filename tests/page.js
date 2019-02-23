@@ -29,10 +29,76 @@ describe( "Page", function(){
 	    assert.equal( "time", word_line_0_pos_7 );
 	    assert.equal( "kittens", word_line_1_pos_2 );
 	    assert.equal( "Moppet", word_line_2_pos_10 );
+
 	} );
+
+    } );
+
+    describe( "charBoxAt", function(){
+
+	it( "returns element by line, column", function(){
+
+	    var text = (
+		    "Once upon a time there were three " +
+		    "little kittens, and their names were" +
+		    " Mittens, Tom Kitten, and Moppet." )
+
+	    var lineLength = 37;
+	    var page = new TextPage( text, lineLength );
+
+	    var char_at_line_1_col_7 = page.charBoxAt( 1, 7 );
+	    var char_at_line_2_col_11 = page.charBoxAt( 2, 11 );
+
+	    assert.equal( "k", char_at_line_1_col_7.innerText );
+	    assert.equal( "o", char_at_line_2_col_11.innerText );
+
+	} );
+
     } );
 
     describe( "the cursor", function(){
+
+	it( "applies style class at its position", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorDown();
+	    page.cursorRight();
+	    page.cursorRight();
+
+	    var cursorBox = page.charBoxAt( 1, 2 );
+	    assert.isTrue(
+		cursorBox.classList.contains( "cursor" ) );
+
+	} );
+
+	it( "clears style class from previous position", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorDown();
+	    page.cursorRight();
+	    page.cursorRight();
+
+	    var cursorBox = page.charBoxAt( 1, 2 );
+	    assert.isTrue(
+		cursorBox.classList.contains( "cursor" ) );
+
+	    page.cursorLeft();
+
+	    var nextCursorBox = page.charBoxAt( 1, 1 );
+
+	    assert.isFalse(
+		cursorBox.classList.contains( "cursor" ) );
+
+	    assert.isTrue(
+		nextCursorBox.classList.contains( "cursor" ) );
+	} );
+
 
 	it( "sets to line 0, column 0 on load", function(){
 

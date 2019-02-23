@@ -9,10 +9,10 @@ var keyMap = {
 var bindHandlers = function( page ){
 
     return {
-	"moveUp": page.cursorUp,
-	"moveDown": page.cursorDown,
-	"moveLeft": page.cursorLeft,
-	"moveRight": page.cursorRight,
+	"moveUp": _ => page.cursorUp(),
+	"moveDown": _ => page.cursorDown(),
+	"moveLeft": _ => page.cursorLeft(),
+	"moveRight": _ => page.cursorRight(),
     };
 };
 
