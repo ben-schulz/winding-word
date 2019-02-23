@@ -14,7 +14,6 @@ describe( "KeyDispatcher", function(){
 		"moveDown": moveDownHandler
 	    };
 
-
 	    var dispatcher = new KeyDispatcher( mapping );
 	    var moveDownEvent = new CursorEvent( "moveDown" );
 
@@ -57,14 +56,13 @@ describe( "KeyDispatcher", function(){
 		"d": "moveRight",
 	    };
 
-	    var moveDownHandler = function(){
-
-		done();
-	    };
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
 
 	    var handlers = {
 
-		"moveDown": moveDownHandler
+		"moveDown": _ => { page.cursorDown(); done(); }
 	    };
 
 	    var dispatcher = new KeyDispatcher( handlers );
@@ -82,6 +80,10 @@ describe( "KeyDispatcher", function(){
 
 	    keyboard.keydown( "s" );
 
+	    assert.equal( 1, page.cursorLine );
+
 	} );
+
     } );
+
 } );
