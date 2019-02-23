@@ -3,4 +3,5 @@ src/jsonPersister.js
 src/lexeme.js
 src/verse.js
 src/page.js
+src/keyDispatcher.js
 src/main.js
