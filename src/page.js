@@ -56,6 +56,18 @@ var PageElementFactory = ( function(){
 
 class TextPage{
 
+
+    get lineCount(){
+
+	return this._verses.lineCount;
+    }
+
+    get currentLineEndCol(){
+
+	return ( this._verses
+		 .lineText( this.cursorLine ).length - 1 );
+    }
+
     cursorDown(){
 
 	if( this.cursorLine < this.lineCount - 1 ){
@@ -72,10 +84,7 @@ class TextPage{
 
     cursorRight(){
 
-	var lineLength = ( this._verses
-			   .lineText( this.cursorLine ).length );
-
-	if( this.cursorCol < lineLength - 1 ){
+	if( this.cursorCol < this.currentLineEndCol ){
 
 	    this.cursorCol += 1;
 	}
@@ -95,17 +104,9 @@ class TextPage{
 
 	else if( 0 < this.cursorLine ){
 
-	    var lineLength = ( this._verses
-			   .lineText( this.cursorLine - 1 ).length );
-
-	    this.cursorCol = lineLength - 1;
 	    this.cursorLine -= 1;
+	    this.cursorCol = this.currentLineEndCol;
 	}
-    }
-
-    get lineCount(){
-
-	return this._verses.lineCount;
     }
 
     constructor( text, lineLength=40 ){
