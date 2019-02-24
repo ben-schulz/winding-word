@@ -68,7 +68,6 @@ class Verse{
     _calculateLineEndColumns( lineLength ){
 
 	var textLineEnds = [];
-	var lexemeLineEnds = [];
 	var currentEnd = 0;
 
 	for( var ix = 0; ix < this._lexemes.length; ++ix ){
@@ -78,8 +77,6 @@ class Verse{
 	    if( token.length + currentEnd > lineLength ){
 
 		textLineEnds.push( currentEnd );
-		lexemeLineEnds.push( ix - 1 );
-
 		currentEnd = 0;
 	    }
 	    currentEnd += token.length;
@@ -87,7 +84,7 @@ class Verse{
 
 	textLineEnds.push( currentEnd );
 
-	return [ textLineEnds, lexemeLineEnds ];
+	return textLineEnds;
     }
 
     _calculateTextLineIndices( lineEnds ){
@@ -143,13 +140,13 @@ class Verse{
 
 	this.lineLength = lineLength;
 
-	var ends = this._calculateLineEndColumns( lineLength );
-	var textLineEnds = ends[ 0 ];
-	var wordLineEnds = ends[ 1 ];
+	var textLineEnds =
+	    this._calculateLineEndColumns( lineLength );
 
 	this._textLines = this._calculateTextLineIndices(
 	    textLineEnds );
 
-	this._wordLineEnds = this._calculateWordLineIndices( textLineEnds );
+	this._wordLineEnds = this._calculateWordLineIndices(
+	    textLineEnds );
     }
 }
