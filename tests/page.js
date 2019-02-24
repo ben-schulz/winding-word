@@ -4,11 +4,11 @@ describe( "Page", function(){
 
 	it( "lays out lines of words", function(){
 
-	    var text = (
-		    "Once upon a time there were three " +
-		    "little kittens, and their names were " +
-		    "Mittens, Tom Kitten, and Moppet." )
+	    var line0 = "Once upon a time there were three ";
+	    var line1 = "little kittens, and their names were ";
+	    var line2 = "Mittens, Tom Kitten, and Moppet.";
 
+	    var text = line0 + line1 + line2;
 	    var lineLength = 37;
 	    var page = new TextPage( text, lineLength );
 
@@ -16,19 +16,18 @@ describe( "Page", function(){
 
 	    assert.equal( 3, childNodes.length )
 
-	    var word_line_0_pos_7 =
+	    var word_line_0_pos_6 =
 		childNodes[ 0 ].childNodes[ 6 ].innerText;
 
 	    var word_line_1_pos_2 =
 		childNodes[ 1 ].childNodes[ 2 ].innerText;
 
-	    var word_line_2_pos_10 =
-		childNodes[ 2 ].childNodes[ 9 ].innerText;
+	    var word_line_2_pos_8 =
+		childNodes[ 2 ].childNodes[ 8 ].innerText;
 
-
-	    assert.equal( "time", word_line_0_pos_7 );
+	    assert.equal( "time", word_line_0_pos_6 );
 	    assert.equal( "kittens", word_line_1_pos_2 );
-	    assert.equal( "Moppet", word_line_2_pos_10 );
+	    assert.equal( "Moppet", word_line_2_pos_8 );
 
 	} );
 
@@ -38,11 +37,11 @@ describe( "Page", function(){
 
 	it( "returns element by line, column", function(){
 
-	    var text = (
-		    "Once upon a time there were three " +
-		    "little kittens, and their names were" +
-		    " Mittens, Tom Kitten, and Moppet." )
+	    var line0 = "Once upon a time there were three ";
+	    var line1 = "little kittens, and their names were ";
+	    var line2 = "Mittens, Tom Kitten, and Moppet.";
 
+	    var text = line0 + line1 + line2;
 	    var lineLength = 37;
 	    var page = new TextPage( text, lineLength );
 
@@ -50,7 +49,7 @@ describe( "Page", function(){
 	    var char_at_line_2_col_11 = page.charBoxAt( 2, 11 );
 
 	    assert.equal( "k", char_at_line_1_col_7.innerText );
-	    assert.equal( "o", char_at_line_2_col_11.innerText );
+	    assert.equal( "m", char_at_line_2_col_11.innerText );
 
 	} );
 

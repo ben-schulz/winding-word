@@ -85,7 +85,7 @@ describe( "Verse", function(){
 
 	it( "returns array of lexical tokens at line", function(){
 
-	    var lineLength = 10;
+	    var lineLength = 9;
 	    var text = "the cat sat on the mat.";
 
 	    var page = new Verse( text, lineLength );

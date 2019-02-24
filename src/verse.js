@@ -39,7 +39,7 @@ class Verse{
 	    var startIndex = this._wordLineEnds[ lineNumber - 1];
 	    var endIndex = this._wordLineEnds[ lineNumber ];
 
-	    return this._lexemes.slice( startIndex + 1, endIndex + 1);
+	    return this._lexemes.slice( startIndex, endIndex );
 	}
 
 	if( 0 == lineNumber ){
@@ -47,7 +47,7 @@ class Verse{
 	    var startIndex = 0;
 	    var endIndex = this._wordLineEnds[ lineNumber ];
 
-	    return this._lexemes.slice( startIndex, endIndex + 1);
+	    return this._lexemes.slice( startIndex, endIndex );
 	}
 
     }
@@ -114,6 +114,28 @@ class Verse{
 	return textLines;
     }
 
+    _calculateWordLineIndices( lineEnds ){
+
+	var wordLineIndices = [];
+	var lexemeIndex = 0;
+
+	for( var ix = 0; ix < lineEnds.length; ++ix ){
+
+	    var lineLength = lineEnds[ ix ];
+
+	    var columnsUsed = 0;
+	    while( columnsUsed < lineLength ){
+
+		columnsUsed += this._lexemes[ lexemeIndex ].length;
+		lexemeIndex += 1;
+	    }
+
+	    wordLineIndices.push( lexemeIndex );
+	}
+
+	return wordLineIndices;
+    }
+
     constructor( text, lineLength=40 ){
 
 	this._flat = text;
@@ -128,6 +150,6 @@ class Verse{
 	this._textLines = this._calculateTextLineIndices(
 	    textLineEnds );
 
-	this._wordLineEnds = wordLineEnds;
+	this._wordLineEnds = this._calculateWordLineIndices( textLineEnds );
     }
 }
