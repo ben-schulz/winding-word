@@ -129,10 +129,5 @@ class Verse{
 	    textLineEnds );
 
 	this._wordLineEnds = wordLineEnds;
-
-	for( var ct = 0; ct < this.lineCount; ++ct ){
-
-	    console.info( this.lineWords( ct ) );
-	}
     }
 }
