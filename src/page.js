@@ -99,8 +99,6 @@ class TextPage{
 
     charBoxAt( line, col ){
 
-	console.info( this._charBoxes[ line ][ col ] );
-
 	return this._charBoxes[ line ][ col ];
     }
 
@@ -175,7 +173,7 @@ class TextPage{
 	this._setCursor();
     }
 
-    constructor( text, lineLength=40 ){
+    constructor( text, lineLength=60 ){
 
 	var verses = new Verse( text, lineLength );
 

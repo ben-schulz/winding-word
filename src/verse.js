@@ -39,7 +39,7 @@ class Verse{
 	    var startIndex = this._wordLineEnds[ lineNumber - 1];
 	    var endIndex = this._wordLineEnds[ lineNumber ];
 
-	    return this._lexemes.slice( startIndex + 1, endIndex );
+	    return this._lexemes.slice( startIndex + 1, endIndex + 1);
 	}
 
 	if( 0 == lineNumber ){
@@ -129,5 +129,10 @@ class Verse{
 	    textLineEnds );
 
 	this._wordLineEnds = wordLineEnds;
+
+	for( var ct = 0; ct < this.lineCount; ++ct ){
+
+	    console.info( this.lineWords( ct ) );
+	}
     }
 }
