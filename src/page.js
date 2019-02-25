@@ -101,6 +101,12 @@ class TextPage{
 	return this._verses.lineCount;
     }
 
+    lineEndCol( line ){
+
+	return ( this._verses
+		 .lineText( line ).length - 1 );
+    }
+
     get currentLineEndCol(){
 
 	return ( this._verses
@@ -110,6 +116,29 @@ class TextPage{
     charBoxAt( line, col ){
 
 	return this._charBoxes[ line ][ col ];
+    }
+
+    setMarkAt( line, col ){
+
+	this.charBoxAt( line, col ).classList.add( "mark" );
+    }
+
+    clearMarkAt( line, col ){
+
+	console.info( [ line, col ] );
+	this.charBoxAt( line, col ).classList.remove( "mark" );
+    }
+
+
+    get cursorBox(){
+
+	return this.charBoxAt(
+	    this.cursorLine, this.cursorCol );
+    }
+
+    get markSet(){
+
+	return null !== this.markLine;
     }
 
     _setCursor(){
@@ -141,6 +170,29 @@ class TextPage{
 	    this.cursorLine += 1;
 	}
 	this._setCursor();
+
+	if( !this.markSet ){
+
+	    return;
+	}
+
+	var prevLine = this.cursorLine - 1;
+
+	var startCol = this.cursorCol;
+	var endCol = this.lineEndCol( prevLine );
+	for( var col = startCol; col <= endCol; ++col ){
+
+	    this.setMarkAt( prevLine, col );
+	}
+
+	var currentLine = this.cursorLine;
+	startCol = 0;
+	endCol = this.cursorCol;
+
+	for( var col = startCol; col <= endCol; ++col ){
+
+	    this.setMarkAt( currentLine, col );
+	}
     }
 
     cursorUp(){
@@ -150,6 +202,26 @@ class TextPage{
 	    this.cursorLine -= 1;
 	}
 	this._setCursor();
+
+	if( !this.markSet ){
+
+	    return;
+	}
+
+	var prevLine = this.cursorLine + 1;
+
+	for( var col = this.cursorCol; 0 <= col; --col ){
+
+	    this.clearMarkAt( prevLine, col );
+	}
+
+	var startCol = this.cursorCol;
+	var endCol = this.currentLineEndCol;
+
+	for( var col = endCol; startCol < col; --col ){
+
+	    this.clearMarkAt( this.cursorLine, col );
+	}
     }
 
     cursorRight(){
@@ -165,6 +237,24 @@ class TextPage{
 	    this.cursorLine += 1;
 	}
 	this._setCursor();
+
+	if( !this.markSet ){
+	    return;
+	}
+
+	if( this.markLine < this.cursorLine ){
+
+	    this.cursorBox.classList.add( "mark" );
+	}
+	else if( this.markLine == this.cursorLine
+		 && this.cursorCol < this.markCol ){
+
+	    this.cursorBox.classList.remove( "mark" );
+	}
+	else{
+
+	    this.cursorBox.classList.add( "mark" );
+	}
     }
 
     cursorLeft(){
@@ -181,6 +271,38 @@ class TextPage{
 	    this.cursorCol = this.currentLineEndCol;
 	}
 	this._setCursor();
+
+	if( !this.markSet ){
+	    return;
+	}
+
+	if( this.markLine < this.cursorLine ){
+
+	    this.cursorBox.classList.remove( "mark" );
+	}
+	else if( this.markLine == this.cursorLine
+	       && this.markCol < this.cursorCol ){
+
+	    this.cursorBox.classList.remove( "mark" );
+	}
+	else{
+	    this.cursorBox.classList.add( "mark" );
+	}
+
+    }
+
+    setMark(){
+
+	this.markLine = this.cursorLine;
+	this.markCol = this.cursorCol;
+
+	this.cursorBox.classList.add( "mark" );
+    }
+
+    clearMark(){
+
+	this.markLine = null;
+	this.markCol = null;
     }
 
     constructor( text, lineLength=60 ){
@@ -197,5 +319,10 @@ class TextPage{
 
 	this.cursorLine = 0;
 	this.cursorCol = 0;
+
+	this._setCursor();
+
+	this.markLine = null;
+	this.markCol = null;
     }
 }

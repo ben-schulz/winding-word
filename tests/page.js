@@ -55,6 +55,243 @@ describe( "Page", function(){
 
     } );
 
+    describe( "marker", function(){
+
+	it( "sets from current cursor position", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorDown();
+	    page.cursorRight();
+	    page.cursorRight();
+	    page.cursorRight();
+
+	    page.setMark();
+
+	    assert.equal( 1, page.markLine );
+	    assert.equal( 3, page.markCol );
+
+	} );
+
+	it( "resets to null on clear", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorDown();
+	    page.cursorRight();
+	    page.cursorRight();
+	    page.cursorRight();
+
+	    page.setMark();
+	    page.clearMark();
+
+	    assert.equal( null, page.markLine );
+	    assert.equal( null, page.markCol );
+	} );
+
+	it( "if after, marks next character on right", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorRight();
+	    page.cursorDown();
+
+	    page.setMark();
+	    page.cursorRight();
+
+	    var mark = page.charBoxAt(
+		page.markLine, page.markCol );
+
+	    var cursor = page.cursorBox;
+
+	    assert.isTrue( mark.classList.contains( "mark" ) );
+	    assert.isTrue( cursor.classList.contains( "mark" ) );
+	} );
+
+	it( "if after, clears prior character on left", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorRight();
+	    page.cursorDown();
+
+	    page.setMark();
+	    page.cursorRight();
+	    page.cursorRight();
+	    page.cursorLeft();
+
+	    var mark = page.charBoxAt(
+		page.markLine, page.markCol );
+
+	    var cursor = page.cursorBox;
+
+	    assert.isFalse( cursor.classList.contains( "mark" ) );
+	} );
+
+	it( "if after, clears line on up", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorRight();
+	    page.cursorRight();
+	    page.setMark();
+	    page.cursorDown();
+	    page.cursorRight();
+
+	    page.cursorUp();
+
+	    for( var ix = 0; ix < 10; ++ix ){
+
+		console.info( page.charBoxAt( 0, ix ) );
+	    }
+	    for( var ix = 0; ix < 10; ++ix ){
+
+		console.info( page.charBoxAt( 1, ix ) );
+	    }
+
+	    assert.isFalse(
+		page.charBoxAt( 1, 0 )
+		    .classList.contains( "mark" ) );
+
+	    assert.isFalse(
+		page.charBoxAt( 1, 1 )
+		    .classList.contains( "mark" ) );
+
+	    assert.isFalse(
+		page.charBoxAt( 1, 2 )
+		    .classList.contains( "mark" ) );
+
+	} );
+
+	it( "if after, sets line on down", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorRight();
+	    page.cursorRight();
+	    page.setMark();
+	    page.cursorDown();
+
+	    assert.isTrue(
+		page.charBoxAt( 0, 3 )
+		    .classList.contains( "mark" ) );
+
+	    assert.isTrue(
+		page.charBoxAt( 0, 4 )
+		    .classList.contains( "mark" ) );
+
+	    assert.isTrue(
+		page.charBoxAt( 0, 7 )
+		    .classList.contains( "mark" ) );
+
+	    assert.isTrue(
+		page.charBoxAt( 1, 0 )
+		    .classList.contains( "mark" ) );
+
+	    assert.isTrue(
+		page.charBoxAt( 1, 1 )
+		    .classList.contains( "mark" ) );
+
+	    assert.isTrue(
+		page.charBoxAt( 1, 2 )
+		    .classList.contains( "mark" ) );
+
+	    assert.isFalse(
+		page.charBoxAt( 1, 3 )
+		    .classList.contains( "mark" ) );
+	} );
+
+
+	it( "if before, sets next character on left", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorRight();
+	    page.cursorRight();
+	    page.cursorDown();
+
+	    page.setMark();
+	    page.cursorLeft();
+
+	    var cursor = page.cursorBox;
+	    assert.isTrue( cursor.classList.contains( "mark" ) );
+
+	} );
+
+	it( "if before, clears character on right", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorRight();
+	    page.cursorRight();
+	    page.cursorDown();
+
+	    page.setMark();
+	    page.cursorLeft();
+	    page.cursorLeft();
+	    page.cursorRight();
+
+	    var cursor = page.cursorBox;
+	    assert.isFalse( cursor.classList.contains( "mark" ) );
+
+	} );
+
+	it( "if before, sets on up", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorDown();
+	    page.cursorRight();
+	    page.cursorRight();
+	    page.cursorRight();
+
+	    page.setMark();
+	    page.cursorUp();
+
+	    assert.isTrue(
+		page.charBoxAt( 1, 2 ).classList.contains( "mark" ) );
+	    assert.isTrue(
+		page.charBoxAt( 1, 1 ).classList.contains( "mark" ) );
+	    assert.isTrue(
+		page.charBoxAt( 1, 0 ).classList.contains( "mark" ) );
+
+	    assert.isTrue(
+		page.charBoxAt( 0, 7 ).classList.contains( "mark" ) );
+	    assert.isTrue(
+		page.charBoxAt( 0, 3 ).classList.contains( "mark" ) );
+	    assert.isFalse(
+		page.charBoxAt( 0, 3 ).classList.contains( "mark" ) );
+	} );
+
+	it( "if before, clears on down", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+
+	} );
+
+    } );
+
     describe( "the cursor", function(){
 
 	it( "applies style class at its position", function(){
