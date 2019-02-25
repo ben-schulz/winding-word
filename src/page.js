@@ -1,7 +1,7 @@
 var PageElementFactory = ( function(){
 
-    var charElementType = "span";
-    var wordElementType = "span";
+    var charElementType = "div";
+    var wordElementType = "div";
     var lineElementType = "div";
     var pageElementType = "div";
 
@@ -12,21 +12,31 @@ var PageElementFactory = ( function(){
 	charElement.appendChild(
 	    document.createTextNode( c ) );
 
+	charElement.classList.add( "charBox" );
+
 	return charElement;
     };
 
     var makeWordElement = function( word ){
 
 	var wordElement = document.createElement( wordElementType );
-
 	var charElements = [];
+
 	for( var ix = 0; ix < word.text.length; ++ix ){
 
-	    var c = word.text[ ix ];
+	    if( word.isPrintable ){
+		var c = word.text[ ix ];
+	    }
+	    else{
+		var c = " ";
+	    }
+
 	    var element = makeCharElement( c );
 	    wordElement.appendChild( element );
 	    charElements.push( element );
 	}
+
+	wordElement.classList.add( "wordBox" );
 
 	return [ wordElement, charElements ];
     };

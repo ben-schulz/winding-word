@@ -1,9 +1,10 @@
 var Patterns = (function(){
     return {
 
-	"singleAlpha": /^[a-zA-Z]$/,
+	"singleAlphaNum": /^[a-zA-Z0-9]$/,
 	"alphanumOnly": /^[a-zA-Z0-9]+$/,
 	"spaceOnly": /^\s+$/,
+	"isPrintable": /^\S+$/,
     };
 })();
 
@@ -25,6 +26,11 @@ class Lexeme{
 	return Patterns.spaceOnly.test( this.text );
     }
 
+    get isPrintable(){
+
+	return Patterns.isPrintable.test( this.text );
+    }
+
     constructor( text ){
 
 	this.text = text;
@@ -36,9 +42,9 @@ var Lexer = (function(){
 
     return{
 
-	"isAlpha": function( c ){
+	"isAlphaNum": function( c ){
 
-	    return Patterns.singleAlpha.test( c );
+	    return Patterns.singleAlphaNum.test( c );
 	},
 
 	"lex": function( text ){
@@ -51,7 +57,7 @@ var Lexer = (function(){
 	    var tokens = [];
 	    var currentToken = "";
 
-	    var currentIsAlpha = this.isAlpha( text.charAt( 0 ) );
+	    var currentIsAlpha = this.isAlphaNum( text.charAt( 0 ) );
 	    var prevIsAlpha = !currentIsAlpha;
 
 	    for( var ix = 0; ix < text.length; ++ix ){
@@ -59,7 +65,7 @@ var Lexer = (function(){
 		var c = text.charAt( ix );
 
 		prevIsAlpha = currentIsAlpha;
-		currentIsAlpha = this.isAlpha( c );
+		currentIsAlpha = this.isAlphaNum( c );
 
 		if( ( prevIsAlpha && currentIsAlpha )
 		    || ( !prevIsAlpha && !currentIsAlpha ) ){
