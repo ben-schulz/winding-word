@@ -4,6 +4,8 @@ var keyMap = {
     "s": "moveDown",
     "a": "moveLeft",
     "d": "moveRight",
+    "m": "setMark",
+    "n": "clearMark"
 };
 
 var bindHandlers = function( page ){
@@ -13,6 +15,8 @@ var bindHandlers = function( page ){
 	"moveDown": _ => page.cursorDown(),
 	"moveLeft": _ => page.cursorLeft(),
 	"moveRight": _ => page.cursorRight(),
+	"setMark": _ => page.setMark(),
+	"clearMark": _ => page.clearMark(),
     };
 };
 
