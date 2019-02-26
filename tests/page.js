@@ -288,19 +288,14 @@ describe( "Page", function(){
 	    page.setMark();
 	    page.cursorUp();
 
-	    assert.isTrue(
-		page.charBoxAt( 1, 2 ).classList.contains( "mark" ) );
-	    assert.isTrue(
-		page.charBoxAt( 1, 1 ).classList.contains( "mark" ) );
-	    assert.isTrue(
-		page.charBoxAt( 1, 0 ).classList.contains( "mark" ) );
+	    assertMarkSetAt( page, 1, 0 );
+	    assertMarkSetAt( page, 1, 1 );
+	    assertMarkSetAt( page, 1, 2 );
 
-	    assert.isTrue(
-		page.charBoxAt( 0, 7 ).classList.contains( "mark" ) );
-	    assert.isTrue(
-		page.charBoxAt( 0, 3 ).classList.contains( "mark" ) );
-	    assert.isFalse(
-		page.charBoxAt( 0, 2 ).classList.contains( "mark" ) );
+	    assertMarkSetAt( page, 0, 3 );
+	    assertMarkSetAt( page, 0, 7 );
+
+	    assertMarkClearAt( page, 0, 2 );
 
 	} );
 
