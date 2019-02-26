@@ -231,23 +231,29 @@ class TextPage{
 	    return;
 	}
 
-	var prevLine = this.cursorLine - 1;
-
-	var startCol = this.cursorCol;
-	var endCol = this.lineEndCol( prevLine );
-	for( var col = startCol; col <= endCol; ++col ){
-
-	    this.setMarkAt( prevLine, col );
-	}
-
 	var currentLine = this.cursorLine;
-	startCol = 0;
-	endCol = this.cursorCol;
+	var prevLine = currentLine - 1;
+	var col = this.cursorCol;
 
-	for( var col = startCol; col <= endCol; ++col ){
+	var changedBoxes = this.charBoxRange(
+	    prevLine, col, currentLine, col );
 
-	    this.setMarkAt( currentLine, col );
+	if( prevLine >= this.markLine ){
+
+	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
+
+		changedBoxes[ ix ].classList.add( "mark" );
+	    }
 	}
+	else if( prevLine < this.markLine ){
+
+	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
+
+		changedBoxes[ ix ].classList.remove( "mark" );
+	    }
+	}
+
+	this.setMarkAt( this.cursorLine, this.cursorCol );
     }
 
     cursorUp(){
@@ -263,20 +269,28 @@ class TextPage{
 	    return;
 	}
 
-	var prevLine = this.cursorLine + 1;
+	var currentLine = this.cursorLine;
+	var prevLine = currentLine + 1;
+	var col = this.cursorCol;
 
-	for( var col = this.cursorCol; 0 <= col; --col ){
+	var changedBoxes = this.charBoxRange(
+	    prevLine, col, currentLine, col );
 
-	    this.clearMarkAt( prevLine, col );
+	if( prevLine > this.markLine ){
+
+	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
+
+		changedBoxes[ ix ].classList.remove( "mark" );
+	    }
+	}
+	else if( prevLine <= this.markLine ){
+
+	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
+
+		changedBoxes[ ix ].classList.add( "mark" );
+	    }
 	}
 
-	var startCol = this.cursorCol;
-	var endCol = this.currentLineEndCol;
-
-	for( var col = endCol; startCol < col; --col ){
-
-	    this.clearMarkAt( this.cursorLine, col );
-	}
     }
 
     cursorRight(){

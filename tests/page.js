@@ -1,5 +1,18 @@
 describe( "Page", function(){
 
+    var assertMarkSetAt = function( page, line, col ){
+
+	assert.isTrue( page.charBoxAt( line, col )
+		       .classList.contains( "mark" ) );
+    };
+
+    var assertMarkClearAt = function( page, line, col ){
+
+	assert.isFalse( page.charBoxAt( line, col )
+		       .classList.contains( "mark" ) );
+    };
+
+
     describe( "element structure", function(){
 
 	it( "lays out lines of words", function(){
@@ -185,15 +198,6 @@ describe( "Page", function(){
 
 	    page.cursorUp();
 
-	    for( var ix = 0; ix < 10; ++ix ){
-
-		console.info( page.charBoxAt( 0, ix ) );
-	    }
-	    for( var ix = 0; ix < 10; ++ix ){
-
-		console.info( page.charBoxAt( 1, ix ) );
-	    }
-
 	    assert.isFalse(
 		page.charBoxAt( 1, 0 )
 		    .classList.contains( "mark" ) );
@@ -219,33 +223,16 @@ describe( "Page", function(){
 	    page.setMark();
 	    page.cursorDown();
 
-	    assert.isTrue(
-		page.charBoxAt( 0, 3 )
-		    .classList.contains( "mark" ) );
+	    assertMarkSetAt( page, 0, 3 );
+	    assertMarkSetAt( page, 0, 4 );
+	    assertMarkSetAt( page, 0, 7 );
 
-	    assert.isTrue(
-		page.charBoxAt( 0, 4 )
-		    .classList.contains( "mark" ) );
+	    assertMarkSetAt( page, 1, 0 );
+	    assertMarkSetAt( page, 1, 1 );
+	    assertMarkSetAt( page, 1, 2 );
 
-	    assert.isTrue(
-		page.charBoxAt( 0, 7 )
-		    .classList.contains( "mark" ) );
+	    assertMarkClearAt( page, 1, 3 );
 
-	    assert.isTrue(
-		page.charBoxAt( 1, 0 )
-		    .classList.contains( "mark" ) );
-
-	    assert.isTrue(
-		page.charBoxAt( 1, 1 )
-		    .classList.contains( "mark" ) );
-
-	    assert.isTrue(
-		page.charBoxAt( 1, 2 )
-		    .classList.contains( "mark" ) );
-
-	    assert.isFalse(
-		page.charBoxAt( 1, 3 )
-		    .classList.contains( "mark" ) );
 	} );
 
 
@@ -301,7 +288,6 @@ describe( "Page", function(){
 	    page.setMark();
 	    page.cursorUp();
 
-/*
 	    assert.isTrue(
 		page.charBoxAt( 1, 2 ).classList.contains( "mark" ) );
 	    assert.isTrue(
@@ -314,8 +300,8 @@ describe( "Page", function(){
 	    assert.isTrue(
 		page.charBoxAt( 0, 3 ).classList.contains( "mark" ) );
 	    assert.isFalse(
-		page.charBoxAt( 0, 3 ).classList.contains( "mark" ) );
-*/
+		page.charBoxAt( 0, 2 ).classList.contains( "mark" ) );
+
 	} );
 
 	it( "if before, clears on down", function(){
@@ -324,7 +310,23 @@ describe( "Page", function(){
 	    var lineLength = 10;
 	    var page = new TextPage( text, lineLength );
 
+	    page.cursorDown();
+	    page.cursorDown();
+	    page.cursorRight();
+	    page.cursorRight();
+	    page.setMark();
 
+	    page.cursorUp();
+	    page.cursorUp();
+	    page.cursorLeft();
+	    page.cursorDown();
+
+	    assertMarkSetAt( page, 2, 2 );
+	    assertMarkClearAt( page, 1, 0 );
+	    assertMarkSetAt( page, 1, 1 );
+	    assertMarkSetAt( page, 1, 2 );
+	    assertMarkSetAt( page, 1, 3 );
+	    assertMarkClearAt( page, 2, 3 );
 	} );
 
     } );
