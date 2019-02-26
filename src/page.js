@@ -125,10 +125,65 @@ class TextPage{
 
     clearMarkAt( line, col ){
 
-	console.info( [ line, col ] );
 	this.charBoxAt( line, col ).classList.remove( "mark" );
     }
 
+    charBoxRange( line1, col1, line2, col2 ){
+
+	if( line1 < line2 ){
+
+	    var startLine = line1;
+	    var endLine = line2;
+
+	    var startCol = col1;
+	    var endCol = col2;
+	}
+	else if( line1 > line2 ){
+
+	    var startLine = line2;
+	    var endLine = line1;
+
+	    var startCol = col2;
+	    var endCol = col1;
+	}
+	else{
+
+	    var line = line1;
+
+	    var startCol = Math.min( col1, col2 );
+	    var endCol = Math.max( col1, col2 );
+
+	    var result = [];
+	    for( var col = startCol; col <= endCol; ++col ){
+
+		result.push( this.charBoxAt( line, col ) );
+	    }
+
+	    return result;
+	}
+
+	var result = [];
+	var firstLineLength = this.lineEndCol( startLine );
+
+	for( var col = startCol; col <= firstLineLength; ++col ){
+
+	    result.push( this.charBoxAt( startLine, col ) );
+	}
+
+	for( var line = startLine + 1; line < endLine; ++line ){
+
+	    for( var col = 0; col <= this.lineEndCol( line ); ++col ){
+		result.push( this.charBoxAt( line, col ) );
+	    }
+	}
+
+	for( var col = 0; col <= endCol; ++col ){
+
+	    result.push( this.charBoxAt( endLine, col ) );
+	}
+
+	return result;
+    }
 
     get cursorBox(){
 
