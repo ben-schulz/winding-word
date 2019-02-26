@@ -324,6 +324,62 @@ describe( "Page", function(){
 	    assertMarkClearAt( page, 2, 3 );
 	} );
 
+
+	it( "on up, set all between cursor and mark", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorRight();
+	    page.cursorRight();
+	    page.cursorRight();
+	    page.cursorRight();
+
+	    page.setMark();
+
+	    page.cursorDown();
+
+	    page.cursorLeft();
+	    page.cursorLeft();
+
+	    page.cursorUp();
+
+	    assertMarkClearAt( page, 0, 1 );
+	    assertMarkSetAt( page, 0, 2 );
+	    assertMarkSetAt( page, 0, 3 );
+	    assertMarkSetAt( page, 0, 4 );
+	    assertMarkClearAt( page, 0, 5 );
+
+	} );
+
+	it( "on down, set all between cursor and mark", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorDown();
+	    page.cursorRight();
+	    page.cursorRight();
+	    page.cursorRight();
+	    page.cursorRight();
+
+	    page.setMark();
+
+	    page.cursorUp();
+	    page.cursorRight();
+	    page.cursorRight();
+
+	    page.cursorDown();
+
+	    assertMarkClearAt( page, 1, 3 );
+	    assertMarkSetAt( page, 1, 4 );
+	    assertMarkSetAt( page, 1, 5 );
+	    assertMarkSetAt( page, 1, 6 );
+	    assertMarkClearAt( page, 1, 7 );
+	} );
+
     } );
 
     describe( "the cursor", function(){

@@ -249,11 +249,12 @@ class TextPage{
 
 	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
 
-		changedBoxes[ ix ].classList.remove( "mark" );
+		changedBoxes[ ix ].classList.toggle( "mark" );
 	    }
 	}
 
 	this.setMarkAt( this.cursorLine, this.cursorCol );
+	this.setMarkAt( this.markLine, this.markCol );
     }
 
     cursorUp(){
@@ -280,7 +281,7 @@ class TextPage{
 
 	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
 
-		changedBoxes[ ix ].classList.remove( "mark" );
+		changedBoxes[ ix ].classList.toggle( "mark" );
 	    }
 	}
 	else if( prevLine <= this.markLine ){
@@ -291,6 +292,8 @@ class TextPage{
 	    }
 	}
 
+	this.setMarkAt( this.cursorLine, this.cursorCol );
+	this.setMarkAt( this.markLine, this.markCol );
     }
 
     cursorRight(){
