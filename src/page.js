@@ -12,16 +12,12 @@ class CharBox{
     }
 }
 
-var PageElementFactory = ( function(){
+class WordBox{
 
-    var wordElementType = "div";
-    var lineElementType = "div";
-    var pageElementType = "div";
+    constructor( word ){
 
-    var makeWordElement = function( word ){
-
-	var wordElement = document.createElement( wordElementType );
-	var charElements = [];
+	this.element = document.createElement( "div" );
+	this.childNodes = [];
 
 	for( var ix = 0; ix < word.text.length; ++ix ){
 
@@ -33,13 +29,23 @@ var PageElementFactory = ( function(){
 	    }
 
 	    var charBox = new CharBox( c );
-	    wordElement.appendChild( charBox.element );
-	    charElements.push( charBox.element );
+	    this.element.appendChild( charBox.element );
+	    this.childNodes.push( charBox.element );
 	}
 
-	wordElement.classList.add( "wordBox" );
+	this.element.classList.add( "wordBox" );
+    }
+}
 
-	return [ wordElement, charElements ];
+var PageElementFactory = ( function(){
+
+    var lineElementType = "div";
+    var pageElementType = "div";
+
+    var makeWordElement = function( word ){
+
+	var wordBox = new WordBox( word );
+	return [ wordBox.element, wordBox.childNodes ];
     };
 
     var makeLineElement = function( words ){
@@ -82,10 +88,6 @@ var PageElementFactory = ( function(){
     };
 
     return {
-
-	"lineElementType": lineElementType,
-	"wordElementType": wordElementType,
-	"pageElementType": pageElementType,
 
 	"makeWordElement": makeWordElement,
 	"makeLineElement": makeLineElement,
