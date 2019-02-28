@@ -1,21 +1,22 @@
+class CharBox{
+
+    constructor( c ){
+
+	this.text = c;
+	this.element = document.createElement( "div" );
+
+	this.element.appendChild(
+	    document.createTextNode( this.text ) );
+
+	this.element.classList.add( "charBox" );
+    }
+}
+
 var PageElementFactory = ( function(){
 
-    var charElementType = "div";
     var wordElementType = "div";
     var lineElementType = "div";
     var pageElementType = "div";
-
-    var makeCharElement = function( c ){
-
-	var charElement = document.createElement( charElementType );
-
-	charElement.appendChild(
-	    document.createTextNode( c ) );
-
-	charElement.classList.add( "charBox" );
-
-	return charElement;
-    };
 
     var makeWordElement = function( word ){
 
@@ -31,9 +32,9 @@ var PageElementFactory = ( function(){
 		var c = " ";
 	    }
 
-	    var element = makeCharElement( c );
-	    wordElement.appendChild( element );
-	    charElements.push( element );
+	    var charBox = new CharBox( c );
+	    wordElement.appendChild( charBox.element );
+	    charElements.push( charBox.element );
 	}
 
 	wordElement.classList.add( "wordBox" );
