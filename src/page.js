@@ -61,43 +61,32 @@ class LineBox{
     }
 }
 
-var PageElementFactory = ( function(){
+class PageBox{
 
-    var lineElementType = "div";
-    var pageElementType = "div";
+    charBoxAt( line, col ){
 
-    var makeLineElement = function( words ){
+	return this.lines[ line ].charBoxArray[ col ];
+    }
 
-	var lineBox = new LineBox( words );
-	return [ lineBox.element, lineBox.charBoxArray ];
-    };
+    constructor( lexerOutput ){
 
-    var makePageElement = function( lines ){
+	this.element = document.createElement( "div" );
 
-	var pageElement = document.createElement( pageElementType );
+	this.lines = [];
 
-	var charLines = [];
-	lines.forEachWordLine( line => {
+	lexerOutput.forEachWordLine( line => {
 
-	    var childElements = makeLineElement( line );
-	    var lineElement = childElements[ 0 ];
-	    var charElements = childElements[ 1 ];
+	    var lineBox = new LineBox( line );
 
-	    charLines.push( charElements );
+	    var lineElement = lineBox.element;
+	    var charBoxArray = lineBox.charBoxArray;
 
-	    pageElement.appendChild( lineElement );
+	    this.lines.push( lineBox );
+
+	    this.element.appendChild( lineBox.element );
 	} );
-
-	return [ pageElement, charLines ];
-    };
-
-    return {
-
-	"makeLineElement": makeLineElement,
-	"makePageElement": makePageElement,
-    };
-
-}() );
+    }
+}
 
 class TextPage{
 
@@ -121,7 +110,7 @@ class TextPage{
 
     charBoxAt( line, col ){
 
-	return this._charBoxes[ line ][ col ];
+	return this.pageBox.charBoxAt( line, col );
     }
 
     setMarkAt( line, col ){
@@ -389,11 +378,8 @@ class TextPage{
 
 	this._verses = verses;
 
-	var childNodes =
-	    PageElementFactory.makePageElement( verses );
-
-	this.element = childNodes[ 0 ];
-	this._charBoxes = childNodes[ 1 ];
+	this.pageBox = new PageBox( verses );
+	this.element = this.pageBox.element;
 
 	this.cursorLine = 0;
 	this.cursorCol = 0;
