@@ -3,12 +3,14 @@ describe( "Page", function(){
     var assertMarkSetAt = function( page, line, col ){
 
 	assert.isTrue( page.charBoxAt( line, col )
+		       .element
 		       .classList.contains( "mark" ) );
     };
 
     var assertMarkClearAt = function( page, line, col ){
 
 	assert.isFalse( page.charBoxAt( line, col )
+			.element
 		       .classList.contains( "mark" ) );
     };
 
@@ -158,8 +160,14 @@ describe( "Page", function(){
 
 	    var cursor = page.cursorBox;
 
-	    assert.isTrue( mark.classList.contains( "mark" ) );
-	    assert.isTrue( cursor.classList.contains( "mark" ) );
+	    assert.isTrue( mark
+			   .element
+			   .classList.contains( "mark" ) );
+
+	    assert.isTrue( cursor
+			   .element
+			   .classList.contains( "mark" ) );
+
 	} );
 
 	it( "if after, clears prior character on left", function(){
@@ -181,7 +189,9 @@ describe( "Page", function(){
 
 	    var cursor = page.cursorBox;
 
-	    assert.isFalse( cursor.classList.contains( "mark" ) );
+	    assert.isFalse( cursor
+			    .element
+			    .classList.contains( "mark" ) );
 	} );
 
 	it( "if after, clears line on up", function(){
@@ -200,14 +210,17 @@ describe( "Page", function(){
 
 	    assert.isFalse(
 		page.charBoxAt( 1, 0 )
+		    .element
 		    .classList.contains( "mark" ) );
 
 	    assert.isFalse(
 		page.charBoxAt( 1, 1 )
+		    .element
 		    .classList.contains( "mark" ) );
 
 	    assert.isFalse(
 		page.charBoxAt( 1, 2 )
+		    .element
 		    .classList.contains( "mark" ) );
 
 	} );
@@ -250,7 +263,9 @@ describe( "Page", function(){
 	    page.cursorLeft();
 
 	    var cursor = page.cursorBox;
-	    assert.isTrue( cursor.classList.contains( "mark" ) );
+	    assert.isTrue( cursor
+			   .element
+			   .classList.contains( "mark" ) );
 
 	} );
 
@@ -270,7 +285,9 @@ describe( "Page", function(){
 	    page.cursorRight();
 
 	    var cursor = page.cursorBox;
-	    assert.isFalse( cursor.classList.contains( "mark" ) );
+	    assert.isFalse( cursor
+			    .element
+			    .classList.contains( "mark" ) );
 
 	} );
 
@@ -396,7 +413,9 @@ describe( "Page", function(){
 
 	    var cursorBox = page.charBoxAt( 1, 2 );
 	    assert.isTrue(
-		cursorBox.classList.contains( "cursor" ) );
+		cursorBox
+		    .element
+		    .classList.contains( "cursor" ) );
 
 	} );
 
@@ -412,17 +431,23 @@ describe( "Page", function(){
 
 	    var cursorBox = page.charBoxAt( 1, 2 );
 	    assert.isTrue(
-		cursorBox.classList.contains( "cursor" ) );
+		cursorBox
+		    .element
+		    .classList.contains( "cursor" ) );
 
 	    page.cursorLeft();
 
 	    var nextCursorBox = page.charBoxAt( 1, 1 );
 
 	    assert.isFalse(
-		cursorBox.classList.contains( "cursor" ) );
+		cursorBox
+		    .element
+		    .classList.contains( "cursor" ) );
 
 	    assert.isTrue(
-		nextCursorBox.classList.contains( "cursor" ) );
+		nextCursorBox
+		    .element
+		    .classList.contains( "cursor" ) );
 	} );
 
 
@@ -582,6 +607,38 @@ describe( "Page", function(){
 
 	    assert.equal( 2, page.cursorLine );
 	    assert.equal( 4, page.cursorCol );
+	} );
+    } );
+
+    describe( "onhighlight event", function(){
+
+	it( "sends the highlighted text", function( done ){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+
+	    var page = new TextPage( text, lineLength );
+
+	    for( var ct = 0; ct < 4; ++ct ){
+
+		page.cursorRight();
+	    }
+
+	    page.setMark();
+
+	    for( var ct = 0; ct < 6; ++ct ){
+
+		page.cursorRight();
+	    }
+
+	    page.onhighlight = text => {
+
+		assert.equal( text, "cat sat" );
+		done();
+	    };
+
+	    page.highlight();
+
 	} );
     } );
 } );

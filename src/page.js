@@ -1,5 +1,35 @@
 class CharBox{
 
+    get innerText(){
+
+	return this.element.innerText;
+    }
+
+    setCursor(){
+
+	this.element.classList.add( "cursor" );
+    }
+
+    clearCursor(){
+
+	this.element.classList.remove( "cursor" );
+    }
+
+    setHighlight(){
+
+	this.element.classList.add( "mark" );
+    }
+
+    clearHighlight(){
+
+	this.element.classList.remove( "mark" );
+    }
+
+    toggleHighlight(){
+
+	this.element.classList.toggle( "mark" );
+    }
+
     constructor( c ){
 
 	this.text = c;
@@ -17,7 +47,9 @@ class WordBox{
     constructor( word ){
 
 	this.element = document.createElement( "div" );
-	this.childNodes = [];
+
+	this.text = word.text;
+	this.charBoxes = [];
 
 	for( var ix = 0; ix < word.text.length; ++ix ){
 
@@ -30,7 +62,7 @@ class WordBox{
 
 	    var charBox = new CharBox( c );
 	    this.element.appendChild( charBox.element );
-	    this.childNodes.push( charBox.element );
+	    this.charBoxes.push( charBox );
 	}
 
 	this.element.classList.add( "wordBox" );
@@ -43,18 +75,18 @@ class LineBox{
 
 	this.element = document.createElement( "div" );
 
-	this.charBoxArray = [];
+	this.charBoxes = [];
 	this.wordBoxArray = [];
 	for( var ix = 0; ix < tokens.length; ++ix ){
 
 	    var wordBox = new WordBox( tokens[ ix ] );
 
 	    var wordElement = wordBox.element;
-	    var charElements = wordBox.childNodes;
+	    var charElements = wordBox.charBoxes;
 
 	    this.wordBoxArray.push( wordElement );
 	    charElements.forEach(
-		c => this.charBoxArray.push( c ) );
+		c => this.charBoxes.push( c ) );
 
 	    this.element.appendChild( wordElement );
 	}
@@ -65,7 +97,7 @@ class PageBox{
 
     charBoxAt( line, col ){
 
-	return this.lines[ line ].charBoxArray[ col ];
+	return this.lines[ line ].charBoxes[ col ];
     }
 
     constructor( lexerOutput ){
@@ -115,12 +147,12 @@ class TextPage{
 
     setMarkAt( line, col ){
 
-	this.charBoxAt( line, col ).classList.add( "mark" );
+	this.charBoxAt( line, col ).setHighlight();
     }
 
     clearMarkAt( line, col ){
 
-	this.charBoxAt( line, col ).classList.remove( "mark" );
+	this.charBoxAt( line, col ).clearHighlight();
     }
 
     charBoxRange( line1, col1, line2, col2 ){
@@ -186,6 +218,12 @@ class TextPage{
 	    this.cursorLine, this.cursorCol );
     }
 
+    get cursorText(){
+
+	return this.charBoxAt(
+	    this.cursorLine, this.cursorCol ).text;
+    }
+
     get markSet(){
 
 	return null !== this.markLine;
@@ -198,7 +236,7 @@ class TextPage{
 	var charBox = this.charBoxAt( line, col );
 
 	if( charBox ){
-	    charBox.classList.add( "cursor" );
+	    charBox.setCursor();
 	}
     }
 
@@ -209,7 +247,7 @@ class TextPage{
 	var charBox = this.charBoxAt( line, col );
 
 	if( charBox ){
-	    charBox.classList.remove( "cursor" );
+	    charBox.clearCursor();
 	}
     }
 
@@ -237,14 +275,14 @@ class TextPage{
 
 	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
 
-		changedBoxes[ ix ].classList.add( "mark" );
+		changedBoxes[ ix ].setHighlight();
 	    }
 	}
 	else if( prevLine < this.markLine ){
 
 	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
 
-		changedBoxes[ ix ].classList.toggle( "mark" );
+		changedBoxes[ ix ].toggleHighlight();
 	    }
 	}
 
@@ -276,14 +314,14 @@ class TextPage{
 
 	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
 
-		changedBoxes[ ix ].classList.toggle( "mark" );
+		changedBoxes[ ix ].toggleHighlight( "mark" );
 	    }
 	}
 	else if( prevLine <= this.markLine ){
 
 	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
 
-		changedBoxes[ ix ].classList.add( "mark" );
+		changedBoxes[ ix ].setHighlight( "mark" );
 	    }
 	}
 
@@ -311,16 +349,18 @@ class TextPage{
 
 	if( this.markLine < this.cursorLine ){
 
-	    this.cursorBox.classList.add( "mark" );
+	    this.cursorBox.setHighlight();
+	    this._highlightedText.push( this.cursorText );
 	}
 	else if( this.markLine == this.cursorLine
 		 && this.cursorCol < this.markCol ){
 
-	    this.cursorBox.classList.remove( "mark" );
+	    this.cursorBox.clearHighlight();
 	}
 	else{
 
-	    this.cursorBox.classList.add( "mark" );
+	    this.cursorBox.setHighlight();
+	    this._highlightedText.push( this.cursorText );
 	}
     }
 
@@ -345,15 +385,15 @@ class TextPage{
 
 	if( this.markLine < this.cursorLine ){
 
-	    this.cursorBox.classList.remove( "mark" );
+	    this.cursorBox.clearHighlight();
 	}
 	else if( this.markLine == this.cursorLine
 	       && this.markCol < this.cursorCol ){
 
-	    this.cursorBox.classList.remove( "mark" );
+	    this.cursorBox.clearHighlight();
 	}
 	else{
-	    this.cursorBox.classList.add( "mark" );
+	    this.cursorBox.setHighlight();
 	}
 
     }
@@ -363,13 +403,23 @@ class TextPage{
 	this.markLine = this.cursorLine;
 	this.markCol = this.cursorCol;
 
-	this.cursorBox.classList.add( "mark" );
+	this.cursorBox.setHighlight();
+	this._highlightedText.push( this.cursorText );
     }
 
     clearMark(){
 
 	this.markLine = null;
 	this.markCol = null;
+    }
+
+    highlight(){
+
+	if( null !== this.onhighlight ){
+
+	    console.info( this._highlightedText );
+	    this.onhighlight( this._highlightedText.join( "" ) );
+	}
     }
 
     constructor( text, lineLength=60 ){
@@ -388,5 +438,8 @@ class TextPage{
 
 	this.markLine = null;
 	this.markCol = null;
+
+	this.onhighlight = null;
+	this._highlightedText = [];
     }
 }
