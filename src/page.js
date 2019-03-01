@@ -37,35 +37,39 @@ class WordBox{
     }
 }
 
+class LineBox{
+
+    constructor( tokens ){
+
+	this.element = document.createElement( "div" );
+
+	this.charBoxArray = [];
+	this.wordBoxArray = [];
+	for( var ix = 0; ix < tokens.length; ++ix ){
+
+	    var wordBox = new WordBox( tokens[ ix ] );
+
+	    var wordElement = wordBox.element;
+	    var charElements = wordBox.childNodes;
+
+	    this.wordBoxArray.push( wordElement );
+	    charElements.forEach(
+		c => this.charBoxArray.push( c ) );
+
+	    this.element.appendChild( wordElement );
+	}
+    }
+}
+
 var PageElementFactory = ( function(){
 
     var lineElementType = "div";
     var pageElementType = "div";
 
-    var makeWordElement = function( word ){
-
-	var wordBox = new WordBox( word );
-	return [ wordBox.element, wordBox.childNodes ];
-    };
-
     var makeLineElement = function( words ){
 
-	var lineElement = document.createElement( lineElementType );
-	
-	var charElements = [];
-	var wordElements = [];
-	for( var ix = 0; ix < words.length; ++ix ){
-
-	    var childElements = makeWordElement( words[ ix ] );
-
-	    var wordElement = childElements[ 0 ];
-	    charElements = charElements.concat(
-		childElements[ 1 ] );
-
-	    lineElement.appendChild( wordElement );
-	}
-
-	return [ lineElement, charElements ];
+	var lineBox = new LineBox( words );
+	return [ lineBox.element, lineBox.charBoxArray ];
     };
 
     var makePageElement = function( lines ){
@@ -89,7 +93,6 @@ var PageElementFactory = ( function(){
 
     return {
 
-	"makeWordElement": makeWordElement,
 	"makeLineElement": makeLineElement,
 	"makePageElement": makePageElement,
     };
