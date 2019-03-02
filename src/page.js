@@ -100,9 +100,25 @@ class LineBox{
 
 class PageBox{
 
+    _charPos( line, col ){
+
+	var _line = Math.max( 0, line );
+	var prevLine = Math.max( 0, _line - 1 );
+
+	if( 0 < line ){
+
+	    var lineChars = this.lineEnds[ prevLine ];
+	}
+	else{
+	    var lineChars = 0;
+	}
+
+	return lineChars + col;
+    }
+
     charBoxAt( line, col ){
 
-	return this.lines[ line ].charBoxes[ col ];
+	return this.charBoxes[ this._charPos( line, col ) ];
     }
 
     constructor( lexerOutput ){
@@ -110,13 +126,16 @@ class PageBox{
 	this.element = document.createElement( "div" );
 
 	this.lines = [];
+	this.lineEnds = [];
 	this.charBoxes = [];
 
+	var charCount = 0;
 	lexerOutput.forEachWordLine( line => {
 
 	    var lineBox = new LineBox( line );
 
-	    var lineElement = lineBox.element;
+	    charCount += lineBox.length;
+	    this.lineEnds.push( charCount );
 
 	    this.lines.push( lineBox );
 	    lineBox.charBoxes.forEach( c => {
