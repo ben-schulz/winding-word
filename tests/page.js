@@ -364,7 +364,7 @@ describe( "Page", function(){
 
 	    assertMarkSetAt( page, 2, 2 );
 	    assertMarkClearAt( page, 1, 0 );
-	    assertMarkSetAt( page, 1, 1 );
+	    assertMarkClearAt( page, 1, 1 );
 	    assertMarkSetAt( page, 1, 2 );
 	    assertMarkSetAt( page, 1, 3 );
 	    assertMarkClearAt( page, 2, 3 );
@@ -420,7 +420,7 @@ describe( "Page", function(){
 	    page.cursorDown();
 
 	    assertMarkClearAt( page, 1, 3 );
-	    assertMarkClearAt( page, 1, 4 );
+	    assertMarkSetAt( page, 1, 4 );
 	    assertMarkSetAt( page, 1, 5 );
 	    assertMarkSetAt( page, 1, 6 );
 	    assertMarkClearAt( page, 1, 7 );

@@ -25,6 +25,8 @@
     display: inline;
     white-space: pre;
     width: 1em;
+
+    font-family: monospace;
 }
 
 .cursor{

@@ -100,7 +100,24 @@ class LineBox{
 
 class PageBox{
 
-    _charPos( line, col ){
+    home( line ){
+
+	if( 0 < line ){
+
+	    var prevLine = line - 1;
+
+	    return this.lineEnds[ prevLine ];
+	}
+
+	return 0;
+    }
+
+    end( line ){
+
+	return this.lineEnds[ line ] - 1;
+    }
+
+    charPos( line, col ){
 
 	var _line = Math.max( 0, line );
 	var prevLine = Math.max( 0, _line - 1 );
@@ -118,13 +135,13 @@ class PageBox{
 
     charBoxAt( line, col ){
 
-	return this.charBoxes[ this._charPos( line, col ) ];
+	return this.charBoxes[ this.charPos( line, col ) ];
     }
 
     charBoxRange( line1, col1, line2, col2 ){
 
-	var ix1 = this._charPos( line1, col1 );
-	var ix2 = this._charPos( line2, col2 );
+	var ix1 = this.charPos( line1, col1 );
+	var ix2 = this.charPos( line2, col2 );
 
 	if( ix1 == ix2 ){
 
@@ -199,6 +216,23 @@ class TextPage{
 	this.charBoxAt( line, col ).clearHighlight();
     }
 
+    get cursorPos(){
+
+	return this.pageBox.charPos(
+	    this.cursorLine, this.cursorCol );
+    }
+
+    get markPos(){
+
+	if( this.markSet ){
+
+	    return this.pageBox.charPos(
+		this.markLine, this.markCol );
+	}
+
+	return -1;
+    }
+
     isAfterMark( line, col ){
 
 	return ( this.markSet
@@ -271,7 +305,7 @@ class TextPage{
 	var col = this.cursorCol;
 
 	var changedBoxes = this.pageBox.charBoxRange(
-	    currentLine - 1, col, currentLine, col - 1 );
+	    currentLine - 1, col, currentLine, col );
 
 	if( this.cursorLine > this.markLine ){
 
@@ -280,15 +314,38 @@ class TextPage{
 		changedBoxes[ ix ].setHighlight();
 	    }
 	}
-	else{
+	else if( this.cursorLine < this.markLine ){
 
 	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
 
-		changedBoxes[ ix ].toggleHighlight();
+		changedBoxes[ ix ].clearHighlight();
 	    }
 	}
+	else{
 
-	this.setMarkAt( this.cursorLine, this.cursorCol );
+	    if( this.cursorPos < this.markPos ){
+
+		for( var ix = 0; ix < this.cursorPos + 1; ++ix ){
+
+		    this.pageBox.charBoxes[ ix ].clearHighlight();
+		}
+	    }
+	    else{
+
+		for( var ix = this.pageBox.home( this.cursorLine );
+		     ix < this.markPos;
+		     ++ix ){
+
+		    this.pageBox.charBoxes[ ix ].clearHighlight();
+		}
+
+		for( var ix = this.markPos;
+		     ix < this.cursorPos + 1; ++ix ){
+
+		    this.pageBox.charBoxes[ ix ].setHighlight();
+		}
+	    }
+	}
     }
 
     cursorUp(){
