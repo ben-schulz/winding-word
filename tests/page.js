@@ -143,7 +143,7 @@ describe( "Page", function(){
 	    assert.equal( null, page.markCol );
 	} );
 
-	it( "if after, marks next character on right", function(){
+	it( "on right, marks character behind cursor", function(){
 
 	    var text = "the cat sat on the mat.";
 	    var lineLength = 10;
@@ -164,13 +164,13 @@ describe( "Page", function(){
 			   .element
 			   .classList.contains( "mark" ) );
 
-	    assert.isTrue( cursor
+	    assert.isFalse( cursor
 			   .element
 			   .classList.contains( "mark" ) );
 
 	} );
 
-	it( "if after, clears prior character on left", function(){
+	it( "on left, clears character behind cursor", function(){
 
 	    var text = "the cat sat on the mat.";
 	    var lineLength = 10;
@@ -184,14 +184,26 @@ describe( "Page", function(){
 	    page.cursorRight();
 	    page.cursorLeft();
 
-	    var mark = page.charBoxAt(
+	    var zeroRight = page.charBoxAt(
 		page.markLine, page.markCol );
 
-	    var cursor = page.cursorBox;
+	    var oneRight = page.charBoxAt(
+		page.markLine, page.markCol + 1 );
 
-	    assert.isFalse( cursor
-			    .element
-			    .classList.contains( "mark" ) );
+	    var twoRight = page.charBoxAt(
+		page.markLine, page.markCol + 2 );
+
+	    assert.isTrue( zeroRight
+			   .element
+			   .classList.contains( "mark" ) );
+
+	    assert.isFalse( oneRight
+			   .element
+			   .classList.contains( "mark" ) );
+
+	    assert.isFalse( twoRight
+			   .element
+			   .classList.contains( "mark" ) );
 	} );
 
 	it( "if after, clears line on up", function(){
@@ -249,7 +261,7 @@ describe( "Page", function(){
 	} );
 
 
-	it( "if before, sets next character on left", function(){
+	it( "on left, sets next character", function(){
 
 	    var text = "the cat sat on the mat.";
 	    var lineLength = 10;
@@ -269,7 +281,7 @@ describe( "Page", function(){
 
 	} );
 
-	it( "if before, clears character on right", function(){
+	it( "on left, marks character on cursor", function(){
 
 	    var text = "the cat sat on the mat.";
 	    var lineLength = 10;
@@ -285,10 +297,27 @@ describe( "Page", function(){
 	    page.cursorRight();
 
 	    var cursor = page.cursorBox;
-	    assert.isFalse( cursor
+
+	    var zeroLeft = page.charBoxAt(
+		page.markLine, page.markCol );
+
+	    var oneLeft = page.charBoxAt(
+		page.markLine, page.markCol - 1 );
+
+	    var twoLeft = page.charBoxAt(
+		page.markLine, page.markCol - 2 );
+
+	    assert.isFalse( zeroLeft
 			    .element
 			    .classList.contains( "mark" ) );
 
+	    assert.isTrue( oneLeft
+			   .element
+			   .classList.contains( "mark" ) );
+
+	    assert.isFalse( twoLeft
+			    .element
+			    .classList.contains( "mark" ) );
 	} );
 
 	it( "if before, sets on up", function(){
@@ -626,7 +655,7 @@ describe( "Page", function(){
 
 	    page.setMark();
 
-	    for( var ct = 0; ct < 6; ++ct ){
+	    for( var ct = 0; ct < 7; ++ct ){
 
 		page.cursorRight();
 	    }

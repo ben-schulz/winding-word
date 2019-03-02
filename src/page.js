@@ -71,6 +71,11 @@ class WordBox{
 
 class LineBox{
 
+    get length(){
+
+	return this.charBoxes.length;
+    }
+
     constructor( tokens ){
 
 	this.element = document.createElement( "div" );
@@ -105,15 +110,19 @@ class PageBox{
 	this.element = document.createElement( "div" );
 
 	this.lines = [];
+	this.charBoxes = [];
 
 	lexerOutput.forEachWordLine( line => {
 
 	    var lineBox = new LineBox( line );
 
 	    var lineElement = lineBox.element;
-	    var charBoxArray = lineBox.charBoxArray;
 
 	    this.lines.push( lineBox );
+	    lineBox.charBoxes.forEach( c => {
+
+		this.charBoxes.push( c );
+	    } );
 
 	    this.element.appendChild( lineBox.element );
 	} );
@@ -331,6 +340,26 @@ class TextPage{
 
     cursorRight(){
 
+	if( this.markSet ){
+
+	    if( this.markLine < this.cursorLine ){
+
+		this.cursorBox.setHighlight();
+		this._highlightedText.push( this.cursorText );
+	    }
+	    else if( this.markLine == this.cursorLine
+		     && this.cursorCol < this.markCol ){
+
+		this.cursorBox.clearHighlight();
+	    }
+	    else{
+
+		this.cursorBox.setHighlight();
+		this._highlightedText.push( this.cursorText );
+	    }
+
+	}
+
 	this._clearCursor();
 	if( this.cursorCol < this.currentLineEndCol ){
 
@@ -342,26 +371,6 @@ class TextPage{
 	    this.cursorLine += 1;
 	}
 	this._setCursor();
-
-	if( !this.markSet ){
-	    return;
-	}
-
-	if( this.markLine < this.cursorLine ){
-
-	    this.cursorBox.setHighlight();
-	    this._highlightedText.push( this.cursorText );
-	}
-	else if( this.markLine == this.cursorLine
-		 && this.cursorCol < this.markCol ){
-
-	    this.cursorBox.clearHighlight();
-	}
-	else{
-
-	    this.cursorBox.setHighlight();
-	    this._highlightedText.push( this.cursorText );
-	}
     }
 
     cursorLeft(){
@@ -380,6 +389,7 @@ class TextPage{
 	this._setCursor();
 
 	if( !this.markSet ){
+
 	    return;
 	}
 
@@ -388,23 +398,19 @@ class TextPage{
 	    this.cursorBox.clearHighlight();
 	}
 	else if( this.markLine == this.cursorLine
-	       && this.markCol < this.cursorCol ){
+		 && this.markCol < this.cursorCol ){
 
 	    this.cursorBox.clearHighlight();
 	}
 	else{
 	    this.cursorBox.setHighlight();
 	}
-
     }
 
     setMark(){
 
 	this.markLine = this.cursorLine;
 	this.markCol = this.cursorCol;
-
-	this.cursorBox.setHighlight();
-	this._highlightedText.push( this.cursorText );
     }
 
     clearMark(){
