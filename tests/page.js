@@ -14,7 +14,6 @@ describe( "Page", function(){
 		       .classList.contains( "mark" ) );
     };
 
-
     describe( "element structure", function(){
 
 	it( "lays out lines of words", function(){
@@ -180,6 +179,7 @@ describe( "Page", function(){
 	    page.cursorDown();
 
 	    page.setMark();
+	    page.cursorDown();
 	    page.cursorRight();
 	    page.cursorRight();
 	    page.cursorLeft();

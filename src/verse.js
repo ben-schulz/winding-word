@@ -5,18 +5,6 @@ class Verse{
 	return this._textLines.length;
     }
 
-    charAt( line, col ){
-
-	var index = this.lineLength * line + col;
-
-	if( this._flat.length < index ){
-
-	    return null;
-	}
-
-	return this._flat[ index ];
-    }
-
     forEachWordLine( f ){
 
 	for( var ix = 0; ix < this.lineCount; ++ix ){
