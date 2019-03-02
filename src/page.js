@@ -164,6 +164,23 @@ class TextPage{
 	this.charBoxAt( line, col ).clearHighlight();
     }
 
+    isAfterMark( line, col ){
+
+	return ( this.markSet
+		 && ( line > this.markLine
+		      || ( line == this.markLine
+			   && col >= this.markCol ) ) )
+    }
+
+    isBeforeMark( line, col ){
+
+	return ( this.markSet
+		 && ( line > this.markLine
+		      || ( line == this.markLine
+			   && col < this.markCol ) ) )
+    }
+
+
     charBoxRange( line1, col1, line2, col2 ){
 
 	if( line1 < line2 ){
@@ -274,20 +291,19 @@ class TextPage{
 	}
 
 	var currentLine = this.cursorLine;
-	var prevLine = currentLine - 1;
 	var col = this.cursorCol;
 
 	var changedBoxes = this.charBoxRange(
-	    prevLine, col, currentLine, col );
+	    currentLine - 1, col, currentLine, col - 1 );
 
-	if( prevLine >= this.markLine ){
+	if( this.cursorLine > this.markLine ){
 
 	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
 
 		changedBoxes[ ix ].setHighlight();
 	    }
 	}
-	else if( prevLine < this.markLine ){
+	else{
 
 	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
 
@@ -296,7 +312,6 @@ class TextPage{
 	}
 
 	this.setMarkAt( this.cursorLine, this.cursorCol );
-	this.setMarkAt( this.markLine, this.markCol );
     }
 
     cursorUp(){
@@ -317,47 +332,44 @@ class TextPage{
 	var col = this.cursorCol;
 
 	var changedBoxes = this.charBoxRange(
-	    prevLine, col, currentLine, col );
+	    currentLine + 1, col, currentLine, col );
 
-	if( prevLine > this.markLine ){
+	if( this.cursorLine > this.markLine ){
 
 	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
 
 		changedBoxes[ ix ].toggleHighlight( "mark" );
 	    }
 	}
-	else if( prevLine <= this.markLine ){
+	else if( this.cursorLine < this.markLine ){
 
 	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
 
 		changedBoxes[ ix ].setHighlight( "mark" );
 	    }
 	}
+	else{
 
-	this.setMarkAt( this.cursorLine, this.cursorCol );
-	this.setMarkAt( this.markLine, this.markCol );
+	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
+
+		changedBoxes[ ix ].toggleHighlight( "mark" );
+	    }
+
+	    this.setMarkAt( this.markLine, this.markCol );
+	}
     }
 
     cursorRight(){
 
-	if( this.markSet ){
+	if( this.isAfterMark( this.cursorLine, this.cursorCol ) ){
 
-	    if( this.markLine < this.cursorLine ){
+	    this.cursorBox.setHighlight();
+	    this._highlightedText.push( this.cursorText );
+	}
+	else{
 
-		this.cursorBox.setHighlight();
-		this._highlightedText.push( this.cursorText );
-	    }
-	    else if( this.markLine == this.cursorLine
-		     && this.cursorCol < this.markCol ){
-
-		this.cursorBox.clearHighlight();
-	    }
-	    else{
-
-		this.cursorBox.setHighlight();
-		this._highlightedText.push( this.cursorText );
-	    }
-
+	    this.cursorBox.clearHighlight();
+	    this._highlightedText.pop();
 	}
 
 	this._clearCursor();
@@ -388,22 +400,15 @@ class TextPage{
 	}
 	this._setCursor();
 
-	if( !this.markSet ){
+	if( !this.isAfterMark( this.cursorLine, this.cursorCol ) ){
 
-	    return;
-	}
-
-	if( this.markLine < this.cursorLine ){
-
-	    this.cursorBox.clearHighlight();
-	}
-	else if( this.markLine == this.cursorLine
-		 && this.markCol < this.cursorCol ){
-
-	    this.cursorBox.clearHighlight();
+	    this.cursorBox.setHighlight();
+	    this._highlightedText.push( this.cursorText );
 	}
 	else{
-	    this.cursorBox.setHighlight();
+
+	    this.cursorBox.clearHighlight();
+	    this._highlightedText.pop();
 	}
     }
 
