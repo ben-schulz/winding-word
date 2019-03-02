@@ -88,7 +88,7 @@ describe( "Page", function(){
 	    var endLine = 2;
 	    var endCol = 5;
 
-	    var result = page.charBoxRange(
+	    var result = page.pageBox.charBoxRange(
 		startLine, startCol, endLine, endCol );
 
 	    var textLength = ( line0.slice( 19 ).length

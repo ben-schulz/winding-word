@@ -121,6 +121,22 @@ class PageBox{
 	return this.charBoxes[ this._charPos( line, col ) ];
     }
 
+    charBoxRange( line1, col1, line2, col2 ){
+
+	var ix1 = this._charPos( line1, col1 );
+	var ix2 = this._charPos( line2, col2 );
+
+	if( ix1 == ix2 ){
+
+	    return [];
+	}
+
+	var start = Math.min( ix1, ix2 );
+	var end = Math.max( ix1, ix2 );
+
+	return this.charBoxes.slice( start, end + 1 );
+    }
+
     constructor( lexerOutput ){
 
 	this.element = document.createElement( "div" );
@@ -199,64 +215,6 @@ class TextPage{
 			   && col < this.markCol ) ) )
     }
 
-
-    charBoxRange( line1, col1, line2, col2 ){
-
-	if( line1 < line2 ){
-
-	    var startLine = line1;
-	    var endLine = line2;
-
-	    var startCol = col1;
-	    var endCol = col2;
-	}
-	else if( line1 > line2 ){
-
-	    var startLine = line2;
-	    var endLine = line1;
-
-	    var startCol = col2;
-	    var endCol = col1;
-	}
-	else{
-
-	    var line = line1;
-
-	    var startCol = Math.min( col1, col2 );
-	    var endCol = Math.max( col1, col2 );
-
-	    var result = [];
-	    for( var col = startCol; col <= endCol; ++col ){
-
-		result.push( this.charBoxAt( line, col ) );
-	    }
-
-	    return result;
-	}
-
-	var result = [];
-	var firstLineLength = this.lineEndCol( startLine );
-
-	for( var col = startCol; col <= firstLineLength; ++col ){
-
-	    result.push( this.charBoxAt( startLine, col ) );
-	}
-
-	for( var line = startLine + 1; line < endLine; ++line ){
-
-	    for( var col = 0; col <= this.lineEndCol( line ); ++col ){
-		result.push( this.charBoxAt( line, col ) );
-	    }
-	}
-
-	for( var col = 0; col <= endCol; ++col ){
-
-	    result.push( this.charBoxAt( endLine, col ) );
-	}
-
-	return result;
-    }
-
     get cursorBox(){
 
 	return this.charBoxAt(
@@ -312,7 +270,7 @@ class TextPage{
 	var currentLine = this.cursorLine;
 	var col = this.cursorCol;
 
-	var changedBoxes = this.charBoxRange(
+	var changedBoxes = this.pageBox.charBoxRange(
 	    currentLine - 1, col, currentLine, col - 1 );
 
 	if( this.cursorLine > this.markLine ){
@@ -350,7 +308,7 @@ class TextPage{
 	var prevLine = currentLine + 1;
 	var col = this.cursorCol;
 
-	var changedBoxes = this.charBoxRange(
+	var changedBoxes = this.pageBox.charBoxRange(
 	    currentLine + 1, col, currentLine, col );
 
 	if( this.cursorLine > this.markLine ){
