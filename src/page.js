@@ -423,7 +423,6 @@ class TextPage{
 
 	if( null !== this.onhighlight ){
 
-	    console.info( this._highlightedText );
 	    this.onhighlight( this._highlightedText.join( "" ) );
 	}
     }
