@@ -400,7 +400,7 @@ class TextPage{
 	}
 	this._setCursor();
 
-	if( !this.isAfterMark( this.cursorLine, this.cursorCol ) ){
+	if( this.isBeforeMark( this.cursorLine, this.cursorCol ) ){
 
 	    this.cursorBox.setHighlight();
 	    this._highlightedText.push( this.cursorText );
