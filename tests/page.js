@@ -348,7 +348,7 @@ describe( "Page", function(){
 
 	    assertMarkSetAt( page, 1, 0 );
 	    assertMarkSetAt( page, 1, 1 );
-	    assertMarkSetAt( page, 1, 2 );
+	    assertMarkClearAt( page, 1, 2 );
 
 	    assertMarkClearAt( page, 1, 3 );
 
