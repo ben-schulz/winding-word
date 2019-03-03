@@ -279,13 +279,13 @@ describe( "Page", function(){
 	    page.cursorLeft();
 
 	    var zeroRight = page.charBoxAt(
-		page.markLine, page.markCol );
+		page.cursorLine, page.markCol );
 
 	    var oneRight = page.charBoxAt(
-		page.markLine, page.markCol + 1 );
+		page.cursorLine, page.markCol + 1 );
 
 	    var twoRight = page.charBoxAt(
-		page.markLine, page.markCol + 2 );
+		page.cursorLine, page.markCol + 2 );
 
 	    assert.isTrue( zeroRight
 			   .element
