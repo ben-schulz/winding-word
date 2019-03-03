@@ -488,7 +488,7 @@ describe( "Page", function(){
 	    assertMarkClearAt( page, 0, 1 );
 	    assertMarkSetAt( page, 0, 2 );
 	    assertMarkSetAt( page, 0, 3 );
-	    assertMarkSetAt( page, 0, 4 );
+	    assertMarkClearAt( page, 0, 4 );
 	    assertMarkClearAt( page, 0, 5 );
 
 	} );
@@ -516,7 +516,7 @@ describe( "Page", function(){
 	    assertMarkClearAt( page, 1, 3 );
 	    assertMarkSetAt( page, 1, 4 );
 	    assertMarkSetAt( page, 1, 5 );
-	    assertMarkSetAt( page, 1, 6 );
+	    assertMarkClearAt( page, 1, 6 );
 	    assertMarkClearAt( page, 1, 7 );
 	} );
 
@@ -817,7 +817,7 @@ describe( "Page", function(){
 
 	    var page = new TextPage( text, lineLength );
 
-	    for( var ct = 0; ct < 4; ++ct ){
+	    for( var ct = 0; ct < 3; ++ct ){
 
 		page.cursorRight();
 	    }
