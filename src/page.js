@@ -111,7 +111,7 @@ class PageBox{
 
 	    var prevLine = line - 1;
 
-	    return this.lineEnds[ prevLine ];
+	    return this.lineEnds[ prevLine ] + 1;
 	}
 
 	return 0;
@@ -119,7 +119,7 @@ class PageBox{
 
     end( line ){
 
-	return this.lineEnds[ line ] - 1;
+	return this.lineEnds[ line ];
     }
 
     charPos( line, col ){
@@ -127,9 +127,9 @@ class PageBox{
 	var _line = Math.max( 0, line );
 	var prevLine = Math.max( 0, _line - 1 );
 
-	if( 0 < line ){
+	if( 0 < _line ){
 
-	    var lineChars = this.lineEnds[ prevLine ];
+	    var lineChars = this.lineEnds[ prevLine ] + 1;
 	}
 	else{
 	    var lineChars = 0;
@@ -189,7 +189,7 @@ class PageBox{
 	    var lineBox = new LineBox( line );
 
 	    charCount += lineBox.length;
-	    this.lineEnds.push( charCount );
+	    this.lineEnds.push( charCount - 1 );
 
 	    this.lines.push( lineBox );
 	    lineBox.charBoxes.forEach( c => {
@@ -316,113 +316,41 @@ class TextPage{
     cursorDown(){
 
 	var nextLine = this.cursorLine + 1;
+
+	if( this.lineCount <= nextLine ){
+
+	    return;
+	}
+
 	var nextColumn = Math.min( this.cursorCol,
 				   this.lineEndCol( nextLine ) );
 
 	var nextPos = this.pageBox.charPos( nextLine,
 					    nextColumn );
 
-	this._clearCursor();
-	if( this.cursorLine < this.lineCount - 1 ){
-	    this.cursorLine += 1;
-	}
-	this._setCursor();
+	var forwardMoves = nextPos - this.cursorPos;
 
-	if( !this.markSet ){
-
-	    return;
-	}
-
-	var currentLine = this.cursorLine;
-	var col = this.cursorCol;
-
-	var changedBoxes = this.pageBox.charBoxRange(
-	    currentLine - 1, col, currentLine, col );
-
-	if( this.cursorLine > this.markLine ){
-
-	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
-
-		changedBoxes[ ix ].setHighlight();
-	    }
-	}
-	else if( this.cursorLine < this.markLine ){
-
-	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
-
-		changedBoxes[ ix ].clearHighlight();
-	    }
-	}
-	else{
-
-	    if( this.cursorPos < this.markPos ){
-
-		for( var ix = 0; ix < this.cursorPos + 1; ++ix ){
-
-		    this.pageBox.charBoxes[ ix ].clearHighlight();
-		}
-	    }
-	    else{
-
-		for( var ix = this.pageBox.home( this.cursorLine );
-		     ix < this.markPos;
-		     ++ix ){
-
-		    this.pageBox.charBoxes[ ix ].clearHighlight();
-		}
-
-		for( var ix = this.markPos;
-		     ix < this.cursorPos + 1; ++ix ){
-
-		    this.pageBox.charBoxes[ ix ].setHighlight();
-		}
-	    }
-	}
+	this.cursorRight( forwardMoves );
     }
 
     cursorUp(){
 
-	this._clearCursor();
-	if( 0 < this.cursorLine ){
-	    this.cursorLine -= 1;
-	}
-	this._setCursor();
+	var nextLine = this.cursorLine - 1;
 
-	if( !this.markSet ){
+	if( nextLine < 0 ){
 
 	    return;
 	}
 
-	var currentLine = this.cursorLine;
-	var prevLine = currentLine + 1;
-	var col = this.cursorCol;
+	var nextColumn = Math.min( this.cursorCol,
+				   this.lineEndCol( nextLine ) );
 
-	var changedBoxes = this.pageBox.charBoxRange(
-	    currentLine + 1, col, currentLine, col );
+	var nextPos = this.pageBox.charPos( nextLine,
+					    nextColumn );
 
-	if( this.cursorLine > this.markLine ){
+	var backwardMoves = this.cursorPos - nextPos;
 
-	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
-
-		changedBoxes[ ix ].toggleHighlight( "mark" );
-	    }
-	}
-	else if( this.cursorLine < this.markLine ){
-
-	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
-
-		changedBoxes[ ix ].setHighlight( "mark" );
-	    }
-	}
-	else{
-
-	    for( var ix = 0; ix < changedBoxes.length; ++ix ){
-
-		changedBoxes[ ix ].toggleHighlight( "mark" );
-	    }
-
-	    this.setMarkAt( this.markLine, this.markCol );
-	}
+	this.cursorLeft( backwardMoves );
     }
 
     cursorRight( count=1 ){

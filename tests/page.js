@@ -71,6 +71,20 @@ describe( "Page", function(){
 	    assert.equal( 2, page.pageBox.lineNumber( 102 ) );
 	} );
 
+	it( "returns line number of another char index", function(){
+
+	    var line0 = "the cat ";
+	    var line1 = "sat on ";
+	    var line2 = "the mat.";
+
+	    var text = ( line0 + line1 + line2 );
+	    var lineLength = 9;
+
+	    var page = new TextPage( text, lineLength );
+
+	    assert.equal( 1, page.pageBox.lineNumber( 8 ) );
+	} );
+
 	it( "returns -1 for index out of range", function(){
 
 	    var text = "the cat sat on the mat.";
@@ -95,7 +109,6 @@ describe( "Page", function(){
 	    var lineLength = 9;
 
 	    var page = new TextPage( text, lineLength );
-
 
 	    var line0_home = page.pageBox.home( 0 );
 	    var line1_home = page.pageBox.home( 1 );
@@ -577,8 +590,11 @@ describe( "Page", function(){
 
 	    var page = new TextPage( text, lineLength );
 
+	    console.info( page.cursorLine, page.cursorCol );
 	    page.cursorDown();
+	    console.info( page.cursorLine, page.cursorCol );
 	    page.cursorDown();
+	    console.info( page.cursorLine, page.cursorCol );
 
 	    assert.equal( 2, page.cursorLine );
 	} );
@@ -696,8 +712,6 @@ describe( "Page", function(){
 	    for( var ct = 0; ct < 11; ++ct ){
 
 		page.cursorRight();
-
-		console.info( [ page.cursorLine, page.cursorCol ] );
 	    }
 
 	    assert.equal( 3, page.cursorCol );
@@ -789,10 +803,7 @@ describe( "Page", function(){
 	    page.cursorRight( 3 );
 	    page.cursorLeft( 4 );
 
-	    console.info( [page.cursorLine, page.cursorCol] );
-
 	    assert.equal( 7, page.cursorCol );
-
 	} );
 
     } );
