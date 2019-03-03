@@ -258,22 +258,6 @@ class TextPage{
 	return -1;
     }
 
-    isAfterMark( line, col ){
-
-	return ( this.markSet
-		 && ( line > this.markLine
-		      || ( line == this.markLine
-			   && col >= this.markCol ) ) )
-    }
-
-    isBeforeMark( line, col ){
-
-	return ( this.markSet
-		 && ( line > this.markLine
-		      || ( line == this.markLine
-			   && col < this.markCol ) ) )
-    }
-
     get cursorBox(){
 
 	return this.charBoxAt(
@@ -355,16 +339,7 @@ class TextPage{
 
     cursorRight( count=1 ){
 
-	if( this.isAfterMark( this.cursorLine, this.cursorCol ) ){
-
-	    this.cursorBox.setHighlight();
-	    this._highlightedText.push( this.cursorText );
-	}
-	else{
-
-	    this.cursorBox.clearHighlight();
-	    this._highlightedText.pop();
-	}
+	var prevPos = this.cursorPos;
 
 	var colsRemaining = (
 	    this.pageBox.end( this.cursorLine ) - this.cursorPos );
@@ -395,10 +370,31 @@ class TextPage{
 		    - this.pageBox.home( this.cursorLine ) );
 	}
 	this._setCursor();
+
+	if( !this.markSet ){
+
+	    return;
+	}
+
+	var currentPos = this.cursorPos;
+	for( var pos = prevPos; pos < currentPos; ++pos ){
+
+	    if( this.markPos <= pos ){
+
+		this.pageBox.charBoxes[ pos ].setHighlight();
+		this._highlightedText.push( this.cursorText );
+	    }
+	    else{
+
+		this.pageBox.charBoxes[ pos ].clearHighlight();
+		this._highlightedText.pop();
+	    }
+	}
     }
 
     cursorLeft( count=1 ){
 
+	var prevPos = this.cursorPos;
 	var colsRemaining = this.cursorCol;
 
 	this._clearCursor();
@@ -429,15 +425,24 @@ class TextPage{
 	}
 	this._setCursor();
 
-	if( this.isBeforeMark( this.cursorLine, this.cursorCol ) ){
+	if( !this.markSet ){
 
-	    this.cursorBox.setHighlight();
-	    this._highlightedText.push( this.cursorText );
+	    return;
 	}
-	else{
 
-	    this.cursorBox.clearHighlight();
-	    this._highlightedText.pop();
+	var currentPos = this.cursorPos;
+	for( var pos = currentPos; pos < prevPos; ++pos ){
+
+	    if( this.markPos > pos ){
+
+		this.pageBox.charBoxes[ pos ].setHighlight();
+		this._highlightedText.push( this.cursorText );
+	    }
+	    else{
+
+		this.pageBox.charBoxes[ pos ].clearHighlight();
+		this._highlightedText.pop();
+	    }
 	}
     }
 
