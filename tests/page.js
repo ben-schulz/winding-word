@@ -83,6 +83,51 @@ describe( "Page", function(){
 
     } );
 
+    describe( "column indexing", function(){
+
+	it( "sets home at first column in line", function(){
+
+	    var line0 = "the cat ";
+	    var line1 = "sat on ";
+	    var line2 = "the mat.";
+
+	    var text = ( line0 + line1 + line2 );
+	    var lineLength = 9;
+
+	    var page = new TextPage( text, lineLength );
+
+
+	    var line0_home = page.pageBox.home( 0 );
+	    var line1_home = page.pageBox.home( 1 );
+	    var line2_home = page.pageBox.home( 2 );
+
+	    assert.equal( 0, line0_home );
+	    assert.equal( 8, line1_home );
+	    assert.equal( 15, line2_home );
+	} );
+
+	it( "sets end at last column in line", function(){
+
+	    var line0 = "the cat ";
+	    var line1 = "sat on ";
+	    var line2 = "the mat.";
+
+	    var text = ( line0 + line1 + line2 );
+	    var lineLength = 9;
+
+	    var page = new TextPage( text, lineLength );
+
+	    var line0_end = page.pageBox.end( 0 );
+	    var line1_end = page.pageBox.end( 1 );
+	    var line2_end = page.pageBox.end( 2 );
+
+	    assert.equal( 7, line0_end );
+	    assert.equal( 14, line1_end );
+	    assert.equal( 22, line2_end );
+
+	} );
+    } );
+
     describe( "charBoxAt", function(){
 
 	it( "returns element by line, column", function(){
