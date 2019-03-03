@@ -100,6 +100,11 @@ class LineBox{
 
 class PageBox{
 
+    get lastPos(){
+
+	return this.charBoxes.length - 1;
+    }
+
     home( line ){
 
 	if( 0 < line ){
@@ -131,6 +136,22 @@ class PageBox{
 	}
 
 	return lineChars + col;
+    }
+
+    lineNumber( charIndex ){
+
+	if( 0 > charIndex || charIndex > this.lastPos ){
+
+	    return -1;
+	}
+
+	var line = 0;
+	while( charIndex > this.lineEnds[ line ] ){
+
+	    line += 1;
+	}
+
+	return line;
     }
 
     charBoxAt( line, col ){
@@ -393,7 +414,7 @@ class TextPage{
 	}
     }
 
-    cursorRight(){
+    cursorRight( count=1 ){
 
 	if( this.isAfterMark( this.cursorLine, this.cursorCol ) ){
 
@@ -406,15 +427,33 @@ class TextPage{
 	    this._highlightedText.pop();
 	}
 
-	this._clearCursor();
-	if( this.cursorCol < this.currentLineEndCol ){
+	var colsRemaining = (
+	    this.pageBox.end( this.cursorLine ) - this.cursorPos );
 
-	    this.cursorCol += 1;
+	this._clearCursor();
+	if( count <= colsRemaining ){
+
+	    this.cursorCol += count;
 	}
-	else if( this.cursorLine < this.lineCount - 1 ){
+	else if( 0 == colsRemaining
+		 && this.cursorLine < this.lineCount - 1 ){
 
 	    this.cursorCol = 0;
 	    this.cursorLine += 1;
+	}
+	else if( this.cursorLine < this.lineCount - 1 ){
+
+	    var newLineNumber = this.pageBox.lineNumber(
+		this.cursorPos + count );
+
+	    var prevLineEnd =
+		this.pageBox.lineEnds[ newLineNumber - 1 ];
+
+	    this.cursorCol = (
+		this.cursorPos + count  - prevLineEnd );
+
+	    this.cursorLine = newLineNumber;
+
 	}
 	this._setCursor();
     }

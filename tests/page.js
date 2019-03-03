@@ -47,6 +47,42 @@ describe( "Page", function(){
 
     } );
 
+    describe( "lineNumber", function(){
+
+	it( "returns line number of a char index", function(){
+
+	    var line0 = "Once upon a time there were three ";
+	    var line1 = "little kittens, and their names were ";
+	    var line2 = "Mittens, Tom Kitten, and Moppet.";
+
+	    var text = line0 + line1 + line2;
+	    var lineLength = 37;
+	    var page = new TextPage( text, lineLength );
+
+	    assert.equal( 0, page.pageBox.lineNumber( 0 ) );
+	    assert.equal( 0, page.pageBox.lineNumber( 31 ) );
+	    assert.equal( 0, page.pageBox.lineNumber( 33 ) );
+
+	    assert.equal( 1, page.pageBox.lineNumber( 47 ) );
+	    assert.equal( 1, page.pageBox.lineNumber( 51 ) );
+	    assert.equal( 1, page.pageBox.lineNumber( 70 ) );
+
+	    assert.equal( 2, page.pageBox.lineNumber( 88 ) );
+	    assert.equal( 2, page.pageBox.lineNumber( 102 ) );
+	} );
+
+	it( "returns -1 for index out of range", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    assert.equal( -1, page.pageBox.lineNumber( -2 ) );
+	    assert.equal( -1, page.pageBox.lineNumber( 255 ) );
+	} );
+
+    } );
+
     describe( "charBoxAt", function(){
 
 	it( "returns element by line, column", function(){
@@ -556,6 +592,42 @@ describe( "Page", function(){
 	    assert.equal( 1, page.cursorCol );
 	} );
 
+
+	it( "moves N columns if N given", function(){
+
+	    var text = "the cat sat on the mat.";
+
+	    var page = new TextPage( text );
+
+	    page.cursorRight( 5 );
+
+	    assert.equal( 5, page.cursorCol );
+	} );
+
+	it( "moves N columns across lines", function(){
+
+	    var text = "the cat sat on the mat.";
+
+	    var lineLength = 10;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorRight( 12 );
+
+	    assert.equal( 4, page.cursorCol );
+	} );
+
+	it( "moves N columns across multiple lines", function(){
+
+	    var text = "the cat sat on the mat.";
+
+	    var lineLength = 9;
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorRight( 19 );
+
+	    assert.equal( 4, page.cursorCol );
+	} );
+
 	it( "moves to previous column on cursorLeft", function(){
 
 	    var text = "the cat sat on the mat.";
@@ -579,6 +651,8 @@ describe( "Page", function(){
 	    for( var ct = 0; ct < 11; ++ct ){
 
 		page.cursorRight();
+
+		console.info( [ page.cursorLine, page.cursorCol ] );
 	    }
 
 	    assert.equal( 3, page.cursorCol );
