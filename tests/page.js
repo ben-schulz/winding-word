@@ -456,9 +456,9 @@ describe( "Page", function(){
 	    page.cursorLeft();
 	    page.cursorDown();
 
-	    assertMarkSetAt( page, 2, 2 );
+	    assertMarkSetAt( page, 2, 1 );
 	    assertMarkClearAt( page, 1, 0 );
-	    assertMarkClearAt( page, 1, 1 );
+	    assertMarkSetAt( page, 1, 1 );
 	    assertMarkSetAt( page, 1, 2 );
 	    assertMarkSetAt( page, 1, 3 );
 	    assertMarkClearAt( page, 2, 3 );
