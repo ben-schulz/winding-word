@@ -212,14 +212,18 @@ class TextPage{
 
     lineEndCol( line ){
 
-	return ( this._verses
-		 .lineText( line ).length - 1 );
+	if( line < this.lineCount ){
+
+	    return ( this._verses
+		     .lineText( line ).length - 1 );
+	}
+
+	return -1;
     }
 
     get currentLineEndCol(){
 
-	return ( this._verses
-		 .lineText( this.cursorLine ).length - 1 );
+	return this.lineEndCol( this.cursorLine );
     }
 
     charBoxAt( line, col ){
@@ -310,6 +314,13 @@ class TextPage{
     }
 
     cursorDown(){
+
+	var nextLine = this.cursorLine + 1;
+	var nextColumn = Math.min( this.cursorCol,
+				   this.lineEndCol( nextLine ) );
+
+	var nextPos = this.pageBox.charPos( nextLine,
+					    nextColumn );
 
 	this._clearCursor();
 	if( this.cursorLine < this.lineCount - 1 ){
