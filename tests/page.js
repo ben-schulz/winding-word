@@ -593,7 +593,7 @@ describe( "Page", function(){
 	} );
 
 
-	it( "moves N columns if N given", function(){
+	it( "moves N columns right if N given", function(){
 
 	    var text = "the cat sat on the mat.";
 
@@ -604,7 +604,7 @@ describe( "Page", function(){
 	    assert.equal( 5, page.cursorCol );
 	} );
 
-	it( "moves N columns across lines", function(){
+	it( "moves N columns right across lines", function(){
 
 	    var text = "the cat sat on the mat.";
 
@@ -616,7 +616,7 @@ describe( "Page", function(){
 	    assert.equal( 4, page.cursorCol );
 	} );
 
-	it( "moves N columns across multiple lines", function(){
+	it( "moves N columns right across many lines", function(){
 
 	    var text = "the cat sat on the mat.";
 
@@ -662,8 +662,12 @@ describe( "Page", function(){
 
 	it( "wraps on cursorLeft from column 0", function(){
 
-	    var text = "the cat sat on the mat.";
-	    var lineLength = 10;
+	    var line0 = "the cat ";
+	    var line1 = "sat on ";
+	    var line2 = "the mat.";
+
+	    var text = ( line0 + line1 + line2 );
+	    var lineLength = 9;
 
 	    var page = new TextPage( text, lineLength );
 
@@ -673,9 +677,8 @@ describe( "Page", function(){
 	    page.cursorLeft();
 	    page.cursorLeft();
 
-	    assert.equal( 8, page.cursorCol );
 	    assert.equal( 1, page.cursorLine );
-
+	    assert.equal( 5, page.cursorCol );
 	} );
 
 	it( "stops at column 0, line 0, on cursorLeft", function(){
@@ -711,6 +714,42 @@ describe( "Page", function(){
 	    assert.equal( 2, page.cursorLine );
 	    assert.equal( 4, page.cursorCol );
 	} );
+
+	it( "moves N columns left if N given", function(){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorRight( 6 );
+	    page.cursorLeft( 2 );
+
+	    assert.equal( 4, page.cursorCol );
+
+	} );
+
+	it( "moves N columns left across lines", function(){
+
+	    var line0 = "the cat ";
+	    var line1 = "sat on ";
+	    var line2 = "the mat.";
+
+	    var text = ( line0 + line1 + line2 );
+	    var lineLength = 9;
+
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorDown();
+	    page.cursorRight( 3 );
+	    page.cursorLeft( 4 );
+
+	    console.info( [page.cursorLine, page.cursorCol] );
+
+	    assert.equal( 7, page.cursorCol );
+
+	} );
+
     } );
 
     describe( "onhighlight event", function(){

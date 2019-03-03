@@ -272,6 +272,12 @@ class TextPage{
 
     get cursorBox(){
 
+	if( !this.charBoxAt(
+	    this.cursorLine, this.cursorCol ) ){
+
+	    console.info( this.cursorLine, this.cursorCol );
+	}
+
 	return this.charBoxAt(
 	    this.cursorLine, this.cursorCol );
     }
@@ -458,18 +464,31 @@ class TextPage{
 	this._setCursor();
     }
 
-    cursorLeft(){
+    cursorLeft( count=1 ){
+
+	var colsRemaining = this.cursorCol;
 
 	this._clearCursor();
-	if( 0 < this.cursorCol ){
+	if( count <= colsRemaining ){
 
-	    this.cursorCol -= 1;
+	    this.cursorCol -= count;
 	}
+	else if( this.cursorLine > 0 ){
 
-	else if( 0 < this.cursorLine ){
+	    var newLine = this.pageBox.lineNumber(
+		this.cursorPos - count );
 
-	    this.cursorLine -= 1;
-	    this.cursorCol = this.currentLineEndCol;
+	    var currentLineHome =
+		this.pageBox.home( newLine );
+
+	    var currentLineEnd =
+		this.pageBox.lineEnds[ newLine ];
+
+	    var newCol = (
+		this.cursorPos - count - currentLineHome );
+
+	    this.cursorCol = newCol;
+	    this.cursorLine = newLine;
 	}
 	this._setCursor();
 
