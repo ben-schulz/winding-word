@@ -272,12 +272,6 @@ class TextPage{
 
     get cursorBox(){
 
-	if( !this.charBoxAt(
-	    this.cursorLine, this.cursorCol ) ){
-
-	    console.info( this.cursorLine, this.cursorCol );
-	}
-
 	return this.charBoxAt(
 	    this.cursorLine, this.cursorCol );
     }
@@ -441,25 +435,25 @@ class TextPage{
 
 	    this.cursorCol += count;
 	}
-	else if( 0 == colsRemaining
-		 && this.cursorLine < this.lineCount - 1 ){
-
-	    this.cursorCol = 0;
-	    this.cursorLine += 1;
-	}
 	else if( this.cursorLine < this.lineCount - 1 ){
 
 	    var newLineNumber = this.pageBox.lineNumber(
 		this.cursorPos + count );
 
-	    var prevLineEnd =
-		this.pageBox.lineEnds[ newLineNumber - 1 ];
+	    var newLineHome =
+		this.pageBox.home( newLineNumber );
+
+	    var newCol = (
+		this.cursorPos + count  - newLineHome );
+
+	    this.cursorCol = newCol;
+	    this.cursorLine = newLineNumber;
+	}
+	else{
 
 	    this.cursorCol = (
-		this.cursorPos + count  - prevLineEnd );
-
-	    this.cursorLine = newLineNumber;
-
+		this.pageBox.end( this.cursorLine )
+		    - this.pageBox.home( this.cursorLine ) );
 	}
 	this._setCursor();
     }
@@ -489,6 +483,10 @@ class TextPage{
 
 	    this.cursorCol = newCol;
 	    this.cursorLine = newLine;
+	}
+	else{
+
+	    this.cursorCol = 0;
 	}
 	this._setCursor();
 
