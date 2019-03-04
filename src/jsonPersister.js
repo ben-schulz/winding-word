@@ -51,11 +51,12 @@ class JsonDownload{
 	}
     }
 
-    constructor(){
+    constructor( displayText="download marks" ){
 
-	this.elementType = "div";
-	this.element = document.createElement(
-	    this.elementType );
+	this.element = document.createElement( "div" );
+
+	this.element.appendChild(
+	    document.createTextNode( displayText ) );
 
 	this.element.classList.add( "jsondownloader" );
 

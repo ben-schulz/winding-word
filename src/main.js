@@ -1,3 +1,11 @@
+var Annotations = ( function(){
+
+    return {
+	"marks":[]
+    }
+
+}() );
+
 var keyMap = {
 
     "w": "moveUp",
@@ -6,7 +14,7 @@ var keyMap = {
     "d": "moveRight",
     "m": "setMark",
     "n": "clearMark",
-    "Enter": "persistHighlight",
+    "Enter": "persistMarks",
     "Escape": "clearAll"
 };
 
@@ -19,6 +27,8 @@ var bindHandlers = function( page ){
 	"moveRight": _ => page.cursorRight(),
 	"setMark": _ => page.setMark(),
 	"clearMark": _ => page.clearMark(),
+	"persistMarks": _ => page.persistMarks(),
+	"clearAll": _ => page.clearAll(),
     };
 };
 
@@ -59,6 +69,13 @@ textLoader.onload = text => {
 
     var page = new TextPage( text );
 
+    page.onpersist = text => {
+
+	Annotations.marks.push( {
+	    "text": text
+	} );
+    };
+
     var pageHandlers = bindHandlers( page );
     var keyHandlers = bindKeys( pageHandlers );
 
@@ -71,4 +88,4 @@ textLoader.onload = text => {
 var jsonDownloader = new JsonDownload();
 document.body.appendChild( jsonDownloader.element );
 
-jsonDownloader.value = { 'ok': 'neat', 'wow':'awesome' };
+jsonDownloader.value = Annotations;

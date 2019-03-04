@@ -460,18 +460,37 @@ class TextPage{
 	this.markEndPos = null;
     }
 
-    highlight(){
+    get markedText(){
 
-	if( null == this.onhighlight ){
+	return this.pageBox.text.slice(
+	    Math.min( this.markStartPos, this.markEndPos ),
+	    Math.max( this.markStartPos, this.markEndPos ) );
+    }
+
+    persistMarks(){
+
+	if( null == this.onpersist ){
 
 	    return;
 	}
 
-	var highlightedText = this.pageBox.text.slice(
-	    Math.min( this.markStartPos, this.markEndPos ),
-	    Math.max( this.markStartPos, this.markEndPos ) );
+	this.onpersist( this.markedText.join( "" ) );
+	this.clearAll();
+    }
 
-	this.onhighlight( highlightedText.join( "" ) );
+    clearAll(){
+
+	var startPos =
+	    Math.min( this.markStartPos, this.markEndPos );
+
+	var endPos =
+	    Math.max( this.markStartPos, this.markEndPos );
+
+	for( var pos = startPos; pos <= endPos; ++pos ){
+
+	    this.pageBox.charBoxes[ pos ].clearHighlight();
+	}
+	this.clearMark();
     }
 
     constructor( text, lineLength=60 ){
@@ -493,7 +512,7 @@ class TextPage{
 
 	this.markEndPos = null;
 
-	this.onhighlight = null;
+	this.onpersist = null;
 	this._highlightedText = [];
     }
 }

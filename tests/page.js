@@ -808,7 +808,7 @@ describe( "Page", function(){
 
     } );
 
-    describe( "onhighlight event", function(){
+    describe( "onpersist event", function(){
 
 	it( "sends the highlighted text", function( done ){
 
@@ -829,13 +829,13 @@ describe( "Page", function(){
 		page.cursorRight();
 	    }
 
-	    page.onhighlight = text => {
+	    page.onpersist = text => {
 
 		assert.equal( text, "cat sat" );
 		done();
 	    };
 
-	    page.highlight();
+	    page.persistMarks();
 
 	} );
 
@@ -855,13 +855,13 @@ describe( "Page", function(){
 	    page.cursorLeft( 3 );
 	    page.cursorRight( 1 );
 
-	    page.onhighlight = text => {
+	    page.onpersist = text => {
 
 		assert.equal( text, "cat sat" );
 		done();
 	    };
 
-	    page.highlight();
+	    page.persistMarks();
 
 	} );
 

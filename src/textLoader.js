@@ -16,11 +16,15 @@ class TextLoader{
 	reader.readAsText( file );
     }
 
-    constructor(){
+    constructor( displayText="read something" ){
 
 	this.onload = null;
 
 	this.element = document.createElement( "div" );
+
+	this.element.appendChild(
+	    document.createTextNode( displayText ) );
+
 	this.element.classList.add( "textloader" );
 
 	this.upload = document.createElement( "input" );
