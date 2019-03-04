@@ -817,7 +817,7 @@ describe( "Page", function(){
 
 	    var page = new TextPage( text, lineLength );
 
-	    for( var ct = 0; ct < 3; ++ct ){
+	    for( var ct = 0; ct < 4; ++ct ){
 
 		page.cursorRight();
 	    }
@@ -838,5 +838,32 @@ describe( "Page", function(){
 	    page.highlight();
 
 	} );
+
+	it( "preserves text order", function( done ){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+
+	    var page = new TextPage( text, lineLength );
+
+	    page.cursorRight( 11 );
+
+	    page.setMark();
+
+	    page.cursorLeft( 10 );
+	    page.cursorRight( 5 );
+	    page.cursorLeft( 3 );
+	    page.cursorRight( 1 );
+
+	    page.onhighlight = text => {
+
+		assert.equal( text, "cat sat" );
+		done();
+	    };
+
+	    page.highlight();
+
+	} );
+
     } );
 } );

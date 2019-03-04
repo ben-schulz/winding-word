@@ -182,6 +182,7 @@ class PageBox{
 	this.lines = [];
 	this.lineEnds = [];
 	this.charBoxes = [];
+	this.text = [];
 
 	var charCount = 0;
 	lexerOutput.forEachWordLine( line => {
@@ -195,6 +196,7 @@ class PageBox{
 	    lineBox.charBoxes.forEach( c => {
 
 		this.charBoxes.push( c );
+		this.text.push( c.text );
 	    } );
 
 	    this.element.appendChild( lineBox.element );
@@ -204,6 +206,11 @@ class PageBox{
 
 class TextPage{
 
+
+    get charCount(){
+
+	return this.pageBox.charBoxes.length;
+    }
 
     get lineCount(){
 
@@ -237,7 +244,7 @@ class TextPage{
 	    this.cursorLine, this.cursorCol );
     }
 
-    get markPos(){
+    get markStartPos(){
 
 	if( this.markSet ){
 
@@ -369,17 +376,18 @@ class TextPage{
 	var currentPos = this.cursorPos;
 	for( var pos = prevPos; pos < currentPos; ++pos ){
 
-	    if( this.markPos <= pos ){
+	    if( this.markStartPos <= pos ){
 
 		this.pageBox.charBoxes[ pos ].setHighlight();
-		this._highlightedText.push( this.cursorText );
 	    }
 	    else{
 
 		this.pageBox.charBoxes[ pos ].clearHighlight();
-		this._highlightedText.pop();
 	    }
 	}
+
+	this.markEndPos = Math.min( this.markEndPos + count,
+				    this.charCount - 1 );
     }
 
     cursorLeft( count=1 ){
@@ -423,17 +431,17 @@ class TextPage{
 	var currentPos = this.cursorPos;
 	for( var pos = currentPos; pos < prevPos; ++pos ){
 
-	    if( this.markPos > pos ){
+	    if( this.markStartPos > pos ){
 
 		this.pageBox.charBoxes[ pos ].setHighlight();
-		this._highlightedText.push( this.cursorText );
 	    }
 	    else{
 
 		this.pageBox.charBoxes[ pos ].clearHighlight();
-		this._highlightedText.pop();
 	    }
 	}
+
+	this.markEndPos = Math.max( this.markEndPos - count, 0 );
     }
 
     setMark(){
@@ -441,21 +449,29 @@ class TextPage{
 	this.markLine = this.cursorLine;
 	this.markCol = this.cursorCol;
 
-	this.highlightPos = this.markPos;
+	this.markEndPos = this.markStartPos;
     }
 
     clearMark(){
 
 	this.markLine = null;
 	this.markCol = null;
+
+	this.markEndPos = null;
     }
 
     highlight(){
 
-	if( null !== this.onhighlight ){
+	if( null == this.onhighlight ){
 
-	    this.onhighlight( this._highlightedText.join( "" ) );
+	    return;
 	}
+
+	var highlightedText = this.pageBox.text.slice(
+	    Math.min( this.markStartPos, this.markEndPos ),
+	    Math.max( this.markStartPos, this.markEndPos ) );
+
+	this.onhighlight( highlightedText.join( "" ) );
     }
 
     constructor( text, lineLength=60 ){
@@ -475,7 +491,7 @@ class TextPage{
 	this.markLine = null;
 	this.markCol = null;
 
-	this.highlightPos = null;
+	this.markEndPos = null;
 
 	this.onhighlight = null;
 	this._highlightedText = [];
