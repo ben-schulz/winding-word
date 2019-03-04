@@ -231,16 +231,6 @@ class TextPage{
 	return this.pageBox.charBoxAt( line, col );
     }
 
-    setMarkAt( line, col ){
-
-	this.charBoxAt( line, col ).setHighlight();
-    }
-
-    clearMarkAt( line, col ){
-
-	this.charBoxAt( line, col ).clearHighlight();
-    }
-
     get cursorPos(){
 
 	return this.pageBox.charPos(
@@ -450,6 +440,8 @@ class TextPage{
 
 	this.markLine = this.cursorLine;
 	this.markCol = this.cursorCol;
+
+	this.highlightPos = this.markPos;
     }
 
     clearMark(){
@@ -482,6 +474,8 @@ class TextPage{
 
 	this.markLine = null;
 	this.markCol = null;
+
+	this.highlightPos = null;
 
 	this.onhighlight = null;
 	this._highlightedText = [];

@@ -5,7 +5,9 @@ var keyMap = {
     "a": "moveLeft",
     "d": "moveRight",
     "m": "setMark",
-    "n": "clearMark"
+    "n": "clearMark",
+    "Enter": "persistHighlight",
+    "Escape": "clearAll"
 };
 
 var bindHandlers = function( page ){
