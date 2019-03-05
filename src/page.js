@@ -1,3 +1,17 @@
+class TextSlice{
+
+    get length(){
+
+	return this.end - this.start;
+    }
+
+    constructor( start, end ){
+
+	this.start = Math.min( start, end )
+	this.end = Math.max( start, end )
+    }
+}
+
 class CharBox{
 
     get innerText(){
@@ -164,10 +178,9 @@ class PageBox{
 	    return [];
 	}
 
-	var start = Math.min( ix1, ix2 );
-	var end = Math.max( ix1, ix2 );
+	var slice = new TextSlice( ix1, ix2 );
 
-	return this.charBoxes.slice( start, end + 1 );
+	return this.charBoxes.slice( slice.start, slice.end + 1 );
     }
 
     constructor( lexerOutput ){
@@ -447,6 +460,20 @@ class TextPage{
 	this.markType = type;
 
 	this.markEndPos = this.markStartPos;
+
+	this.activeMarks[ type ] = {
+
+	    "start": this.markStartPos,
+	    "end": null
+	};
+    }
+
+    unsetMark( type="mark" ){
+
+	this.activeMarks[ type ][ "end" ] =
+	    this.markEndPos;
+
+	this.clearMark();
     }
 
     clearMark(){
@@ -460,9 +487,10 @@ class TextPage{
 
     get markedText(){
 
-	return this.pageBox.text.slice(
-	    Math.min( this.markStartPos, this.markEndPos ),
-	    Math.max( this.markStartPos, this.markEndPos ) );
+	var slice =
+	    new TextSlice( this.markStartPos, this.markEndPos );
+
+	return this.pageBox.text.slice( slice.start, slice.end );
     }
 
     persistMarks(){
@@ -476,15 +504,35 @@ class TextPage{
 	this.clearAll();
     }
 
+    get markTypes(){
+
+	return Object.keys( this.activeMarks );
+    }
+
     clearAll(){
 
-	var startPos =
-	    Math.min( this.markStartPos, this.markEndPos );
+	this.markTypes.forEach( t => {
 
-	var endPos =
-	    Math.max( this.markStartPos, this.markEndPos );
+	    if( "number" === typeof this.activeMarks[ t ].start
+		&& "number" === typeof this.activeMarks[ t ].end ){
 
-	for( var pos = startPos; pos <= endPos; ++pos ){
+		var slice = new TextSlice(
+		    this.activeMarks[ t ].start,
+		    this.activeMarks[ t ].end );
+
+		for( var pos = slice.start;
+		     pos <= slice.end; ++pos ){
+
+		    this.pageBox.charBoxes[ pos ].clearHighlight();
+		}
+	    }
+
+	} );
+
+	var slice =
+	    new TextSlice( this.markStartPos, this.markEndPos );
+
+	for( var pos = slice.start; pos <= slice.end; ++pos ){
 
 	    this.pageBox.charBoxes[ pos ].clearHighlight();
 	}
@@ -510,6 +558,8 @@ class TextPage{
 
 	this.markType = null;
 	this.markEndPos = null;
+
+	this.activeMarks = {};
 
 	this.onpersist = null;
 	this._highlightedText = [];
