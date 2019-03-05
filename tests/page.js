@@ -516,7 +516,7 @@ describe( "Page", function(){
 
     describe( "the cursor", function(){
 
-	it( "applies style class at its position", function(){
+	it( "applies id at its position", function(){
 
 	    var text = "the cat sat on the mat.";
 	    var lineLength = 10;
@@ -527,14 +527,11 @@ describe( "Page", function(){
 	    page.cursorRight();
 
 	    var cursorBox = page.charBoxAt( 1, 2 );
-	    assert.isTrue(
-		cursorBox
-		    .element
-		    .classList.contains( "cursor" ) );
+	    assert.equal( "cursor", cursorBox.element.id );
 
 	} );
 
-	it( "clears style class from previous position", function(){
+	it( "clears id from previous position", function(){
 
 	    var text = "the cat sat on the mat.";
 	    var lineLength = 10;
@@ -545,24 +542,15 @@ describe( "Page", function(){
 	    page.cursorRight();
 
 	    var cursorBox = page.charBoxAt( 1, 2 );
-	    assert.isTrue(
-		cursorBox
-		    .element
-		    .classList.contains( "cursor" ) );
+	    assert.equal( "cursor", cursorBox.element.id );
 
 	    page.cursorLeft();
 
 	    var nextCursorBox = page.charBoxAt( 1, 1 );
 
-	    assert.isFalse(
-		cursorBox
-		    .element
-		    .classList.contains( "cursor" ) );
+	    assert.equal( "null", cursorBox.element.id );
 
-	    assert.isTrue(
-		nextCursorBox
-		    .element
-		    .classList.contains( "cursor" ) );
+	    assert.equal( "cursor", nextCursorBox.element.id );
 	} );
 
 
@@ -582,11 +570,8 @@ describe( "Page", function(){
 
 	    var page = new TextPage( text, lineLength );
 
-	    console.info( page.cursorLine, page.cursorCol );
 	    page.cursorDown();
-	    console.info( page.cursorLine, page.cursorCol );
 	    page.cursorDown();
-	    console.info( page.cursorLine, page.cursorCol );
 
 	    assert.equal( 2, page.cursorLine );
 	} );
@@ -824,7 +809,7 @@ describe( "Page", function(){
 
 	    page.onpersist = marks => {
 
-		assert.equal( marks[ "textMark" ], "cat sat" );
+		assert.equal( marks[ "text" ], "cat sat" );
 		done();
 	    };
 
@@ -852,7 +837,7 @@ describe( "Page", function(){
 
 	    page.onpersist = marks => {
 
-		assert.equal( marks[ "textMark" ], "cat sat" );
+		assert.equal( marks[ "text" ], "cat sat" );
 		done();
 	    };
 

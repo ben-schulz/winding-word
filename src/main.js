@@ -18,7 +18,7 @@ var keyMap = {
     "i": "setRelation",
     "o": "setObject",
 
-    "n": "clearMark",
+    "n": "unsetMark",
     "Enter": "persistMarks",
     "Escape": "clearAll"
 };
@@ -36,7 +36,8 @@ var bindHandlers = function( page ){
 	"setRelation": _ => page.setMark( "relation" ),
 	"setObject": _ => page.setMark( "object" ),
 
-	"clearMark": _ => page.clearMark(),
+	"unsetMark": _ => page.unsetMark(),
+
 	"persistMarks": _ => page.persistMarks(),
 	"clearAll": _ => page.clearAll(),
     };
@@ -79,11 +80,9 @@ textLoader.onload = text => {
 
     var page = new TextPage( text );
 
-    page.onpersist = text => {
+    page.onpersist = mark => {
 
-	Annotations.marks.push( {
-	    "text": text
-	} );
+	Annotations.marks.push( mark );
     };
 
     var pageHandlers = bindHandlers( page );

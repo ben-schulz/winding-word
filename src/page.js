@@ -5,10 +5,18 @@ class TextSlice{
 	return this.end - this.start;
     }
 
-    get isClosed(){
+    get isValid(){
 
 	return "number" === typeof this.start
 	    && "number" === typeof this.end;
+    }
+
+    get isClosed(){
+
+	return "number" === typeof this.start
+	    && "number" === typeof this.end
+	    && 0 <= this.start
+	    && 0 <= this.end;
     }
 
     constructor( start, end ){
@@ -27,22 +35,22 @@ class CharBox{
 
     setCursor(){
 
-	this.element.classList.add( "cursor" );
+	this.element.id = "cursor";
     }
 
     clearCursor(){
 
-	this.element.classList.remove( "cursor" );
+	this.element.id = null;
     }
 
-    setHighlight( type="textMark" ){
+    setHighlight( type="text" ){
 
-	this.element.classList.add( type );
+	this.element.classList.add( type + "Mark" );
     }
 
-    clearHighlight( type="textMark" ){
+    clearHighlight( type="text" ){
 
-	this.element.classList.remove( type );
+	this.element.classList.remove( type + "Mark" );
     }
 
     constructor( c ){
@@ -402,11 +410,11 @@ class TextPage{
 
 	    if( this.markStartPos <= pos ){
 
-		this.pageBox.charBoxes[ pos ].setHighlight();
+		this.highlightChar( pos );
 	    }
 	    else{
 
-		this.pageBox.charBoxes[ pos ].clearHighlight();
+		this.clearChar( pos );
 	    }
 	}
 
@@ -457,18 +465,35 @@ class TextPage{
 
 	    if( this.markStartPos > pos ){
 
-		this.pageBox.charBoxes[ pos ].setHighlight();
+		this.highlightChar( pos );
 	    }
 	    else{
 
-		this.pageBox.charBoxes[ pos ].clearHighlight();
+		this.clearChar( pos );
 	    }
 	}
 
 	this.markEndPos = Math.max( this.markEndPos - count, 0 );
     }
 
-    setMark( type="textMark" ){
+    highlightChar( pos ){
+
+	this.pageBox.charBoxes[ pos ]
+	    .setHighlight( this.markType );
+    }
+
+    clearChar( pos, markType=null ){
+
+	if( null === markType ){
+
+	    var markType = this.markType;
+	}
+
+	this.pageBox.charBoxes[ pos ]
+	    .clearHighlight( markType );
+    }
+
+    setMark( type="text" ){
 
 	this.markLine = this.cursorLine;
 	this.markCol = this.cursorCol;
@@ -484,9 +509,9 @@ class TextPage{
 	};
     }
 
-    unsetMark( type="textMark" ){
+    unsetMark(){
 
-	this.activeMarks[ type ][ "end" ] =
+	this.activeMarks[ this.markType ][ "end" ] =
 	    this.markEndPos;
 
 	this.clearMark();
@@ -544,30 +569,24 @@ class TextPage{
 
 	this.markTypes.forEach( t => {
 
-	    if( "number" === typeof this.activeMarks[ t ].start
-		&& "number" === typeof this.activeMarks[ t ].end ){
-
-		var slice = new TextSlice(
+	    var slice = new TextSlice(
 		    this.activeMarks[ t ].start,
 		    this.activeMarks[ t ].end );
+
+	    if( slice.isValid ){
 
 		for( var pos = slice.start;
 		     pos <= slice.end; ++pos ){
 
-		    this.pageBox.charBoxes[ pos ].clearHighlight();
+		    this.clearChar( pos, t );
 		}
 	    }
 
 	} );
 
-	var slice =
-	    new TextSlice( this.markStartPos, this.markEndPos );
-
-	for( var pos = slice.start; pos <= slice.end; ++pos ){
-
-	    this.pageBox.charBoxes[ pos ].clearHighlight();
-	}
 	this.clearMark();
+
+	this.activeMarks = {};
     }
 
     constructor( text, lineLength=60 ){
