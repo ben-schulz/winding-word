@@ -5,6 +5,12 @@ class TextSlice{
 	return this.end - this.start;
     }
 
+    get isClosed(){
+
+	return "number" === typeof this.start
+	    && "number" === typeof this.end;
+    }
+
     constructor( start, end ){
 
 	this.start = Math.min( start, end )
@@ -29,12 +35,12 @@ class CharBox{
 	this.element.classList.remove( "cursor" );
     }
 
-    setHighlight( type="mark" ){
+    setHighlight( type="textMark" ){
 
 	this.element.classList.add( type );
     }
 
-    clearHighlight( type="mark" ){
+    clearHighlight( type="textMark" ){
 
 	this.element.classList.remove( type );
     }
@@ -161,6 +167,16 @@ class PageBox{
 	}
 
 	return line;
+    }
+
+    textSlice( start, end ){
+
+	if( 0 > start || this.lastPos < end ){
+
+	    return null;
+	}
+
+	return this.text.slice( start, end ).join( "" );
     }
 
     charBoxAt( line, col ){
@@ -452,7 +468,7 @@ class TextPage{
 	this.markEndPos = Math.max( this.markEndPos - count, 0 );
     }
 
-    setMark( type="mark" ){
+    setMark( type="textMark" ){
 
 	this.markLine = this.cursorLine;
 	this.markCol = this.cursorCol;
@@ -468,7 +484,7 @@ class TextPage{
 	};
     }
 
-    unsetMark( type="mark" ){
+    unsetMark( type="textMark" ){
 
 	this.activeMarks[ type ][ "end" ] =
 	    this.markEndPos;
@@ -490,7 +506,7 @@ class TextPage{
 	var slice =
 	    new TextSlice( this.markStartPos, this.markEndPos );
 
-	return this.pageBox.text.slice( slice.start, slice.end );
+	return this.pageBox.textSlice( slice.start, slice.end );
     }
 
     persistMarks(){
@@ -500,7 +516,22 @@ class TextPage{
 	    return;
 	}
 
-	this.onpersist( this.markedText.join( "" ) );
+	var output = {};
+	this.markTypes.forEach( t => {
+
+	    var slice = new TextSlice(
+		this.activeMarks[ t ].start,
+		this.activeMarks[ t ].end );
+
+	    if( slice.isClosed ){
+
+		output[ t ] =
+		    this.pageBox.textSlice(
+			slice.start, slice.end );
+	    }
+	} );
+
+	this.onpersist( output );
 	this.clearAll();
     }
 

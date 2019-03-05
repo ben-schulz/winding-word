@@ -4,14 +4,14 @@ describe( "Page", function(){
 
 	assert.isTrue( page.charBoxAt( line, col )
 		       .element
-		       .classList.contains( "mark" ) );
+		       .classList.contains( "textMark" ) );
     };
 
     var assertMarkClearAt = function( page, line, col ){
 
 	assert.isFalse( page.charBoxAt( line, col )
 			.element
-		       .classList.contains( "mark" ) );
+		       .classList.contains( "textMark" ) );
     };
 
     describe( "element structure", function(){
@@ -253,13 +253,11 @@ describe( "Page", function(){
 
 	    var cursor = page.cursorBox;
 
-	    assert.isTrue( mark
-			   .element
-			   .classList.contains( "mark" ) );
+	    assertMarkSetAt( page,
+			     page.markLine, page.markCol );
 
-	    assert.isFalse( cursor
-			   .element
-			   .classList.contains( "mark" ) );
+	    assertMarkClearAt( page,
+			       page.cursorLine, page.cursorCol );
 
 	} );
 
@@ -287,17 +285,15 @@ describe( "Page", function(){
 	    var twoRight = page.charBoxAt(
 		page.cursorLine, page.markCol + 2 );
 
-	    assert.isTrue( zeroRight
-			   .element
-			   .classList.contains( "mark" ) );
+	    assertMarkSetAt( page,
+			     page.cursorLine, page.markCol );
 
-	    assert.isFalse( oneRight
-			   .element
-			   .classList.contains( "mark" ) );
+	    assertMarkClearAt( page,
+			       page.cursorLine, page.markCol + 1 );
 
-	    assert.isFalse( twoRight
-			   .element
-			   .classList.contains( "mark" ) );
+	    assertMarkClearAt( page,
+			       page.cursorLine, page.markCol + 2 );
+
 	} );
 
 	it( "if after, clears line on up", function(){
@@ -369,10 +365,9 @@ describe( "Page", function(){
 	    page.cursorLeft();
 
 	    var cursor = page.cursorBox;
-	    assert.isTrue( cursor
-			   .element
-			   .classList.contains( "mark" ) );
 
+	    assertMarkSetAt( page,
+			     page.cursorLine, page.cursorCol );
 	} );
 
 	it( "on left, marks character on cursor", function(){
@@ -401,17 +396,14 @@ describe( "Page", function(){
 	    var twoLeft = page.charBoxAt(
 		page.markLine, page.markCol - 2 );
 
-	    assert.isFalse( zeroLeft
-			    .element
-			    .classList.contains( "mark" ) );
+	    assertMarkClearAt( page,
+			       page.markLine, page.markCol );
 
-	    assert.isTrue( oneLeft
-			   .element
-			   .classList.contains( "mark" ) );
+	    assertMarkSetAt( page,
+			     page.markLine, page.markCol - 1 );
 
-	    assert.isFalse( twoLeft
-			    .element
-			    .classList.contains( "mark" ) );
+	    assertMarkClearAt( page,
+			       page.markLine, page.markCol - 2 );
 	} );
 
 	it( "if before, sets on up", function(){
@@ -828,10 +820,11 @@ describe( "Page", function(){
 
 		page.cursorRight();
 	    }
+	    page.unsetMark();
 
-	    page.onpersist = text => {
+	    page.onpersist = marks => {
 
-		assert.equal( text, "cat sat" );
+		assert.equal( marks[ "textMark" ], "cat sat" );
 		done();
 	    };
 
@@ -855,9 +848,11 @@ describe( "Page", function(){
 	    page.cursorLeft( 3 );
 	    page.cursorRight( 1 );
 
-	    page.onpersist = text => {
+	    page.unsetMark();
 
-		assert.equal( text, "cat sat" );
+	    page.onpersist = marks => {
+
+		assert.equal( marks[ "textMark" ], "cat sat" );
 		done();
 	    };
 

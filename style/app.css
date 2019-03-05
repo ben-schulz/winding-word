@@ -54,22 +54,22 @@
     background-color: lightgreen;
 }
 
-.mark{
+.textMark{
 
     background-color: orange;
 }
 
-.subject{
+.subjectMark{
 
     background-color: red;
 }
 
-.relation{
+.relationMark{
 
     background-color: green;
 }
 
-.object{
+.objectMark{
 
     background-color: blue;
 }
