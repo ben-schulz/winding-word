@@ -58,3 +58,18 @@
 
     background-color: orange;
 }
+
+.subject{
+
+    background-color: red;
+}
+
+.relation{
+
+    background-color: green;
+}
+
+.object{
+
+    background-color: blue;
+}

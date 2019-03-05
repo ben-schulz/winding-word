@@ -12,7 +12,12 @@ var keyMap = {
     "s": "moveDown",
     "a": "moveLeft",
     "d": "moveRight",
+
     "m": "setMark",
+    "u": "setSubject",
+    "i": "setRelation",
+    "o": "setObject",
+
     "n": "clearMark",
     "Enter": "persistMarks",
     "Escape": "clearAll"
@@ -25,7 +30,12 @@ var bindHandlers = function( page ){
 	"moveDown": _ => page.cursorDown(),
 	"moveLeft": _ => page.cursorLeft(),
 	"moveRight": _ => page.cursorRight(),
-	"setMark": _ => page.setMark(),
+
+	"setMark": _ => page.setMark( "text" ),
+	"setSubject": _ => page.setMark( "subject" ),
+	"setRelation": _ => page.setMark( "relation" ),
+	"setObject": _ => page.setMark( "object" ),
+
 	"clearMark": _ => page.clearMark(),
 	"persistMarks": _ => page.persistMarks(),
 	"clearAll": _ => page.clearAll(),

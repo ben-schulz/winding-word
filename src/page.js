@@ -15,19 +15,14 @@ class CharBox{
 	this.element.classList.remove( "cursor" );
     }
 
-    setHighlight(){
+    setHighlight( type="mark" ){
 
-	this.element.classList.add( "mark" );
+	this.element.classList.add( type );
     }
 
-    clearHighlight(){
+    clearHighlight( type="mark" ){
 
-	this.element.classList.remove( "mark" );
-    }
-
-    toggleHighlight(){
-
-	this.element.classList.toggle( "mark" );
+	this.element.classList.remove( type );
     }
 
     constructor( c ){
@@ -444,10 +439,12 @@ class TextPage{
 	this.markEndPos = Math.max( this.markEndPos - count, 0 );
     }
 
-    setMark(){
+    setMark( type="mark" ){
 
 	this.markLine = this.cursorLine;
 	this.markCol = this.cursorCol;
+
+	this.markType = type;
 
 	this.markEndPos = this.markStartPos;
     }
@@ -457,6 +454,7 @@ class TextPage{
 	this.markLine = null;
 	this.markCol = null;
 
+	this.markType = null;
 	this.markEndPos = null;
     }
 
@@ -510,6 +508,7 @@ class TextPage{
 	this.markLine = null;
 	this.markCol = null;
 
+	this.markType = null;
 	this.markEndPos = null;
 
 	this.onpersist = null;
