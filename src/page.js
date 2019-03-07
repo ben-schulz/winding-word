@@ -509,11 +509,6 @@ class TextPage{
 	    prevPos = this.cursorPos;
 	    this.cursorRight();
 	}
-
-	if( this.cursorPos < this.pageBox.lastPos ){
-	    this.cursorLeft();
-	}
-
     }
 
     wordLeft(){
@@ -557,6 +552,18 @@ class TextPage{
 
 	this.pageBox.charBoxes[ pos ]
 	    .clearHighlight( markType );
+    }
+
+    toggleMark( type="text" ){
+
+	if( this.markSet ){
+
+	    this.unsetMark( type );
+	}
+	else{
+
+	    this.setMark( type );
+	}
     }
 
     setMark( type="text" ){

@@ -37,10 +37,10 @@ var bindHandlers = function( page ){
 	"wordLeft": _ => page.wordLeft(),
 	"wordRight": _ => page.wordRight(),
 
-	"setMark": _ => page.setMark( "text" ),
-	"setSubject": _ => page.setMark( "subject" ),
-	"setRelation": _ => page.setMark( "relation" ),
-	"setObject": _ => page.setMark( "object" ),
+	"setMark": _ => page.toggleMark( "text" ),
+	"setSubject": _ => page.toggleMark( "subject" ),
+	"setRelation": _ => page.toggleMark( "relation" ),
+	"setObject": _ => page.toggleMark( "object" ),
 
 	"unsetMark": _ => page.unsetMark(),
 
