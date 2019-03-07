@@ -665,26 +665,13 @@ class TextPage{
 
 	this.markTypes.forEach( t => {
 
-	    var start = this.activeMarks[ t ].start;
-	    if( null !== this.activeMarks[ t ].end ){
+	    this.closedMarks[ t ].forEach( m => {
 
-		var end = this.activeMarks[ t ].end;
-	    }
-	    else{
-
-		var end = this.cursorPos;
-	    }
-	    var slice = new TextSlice( start, end );
-
-	    if( slice.isValid ){
-
-		for( var pos = slice.start;
-		     pos <= slice.end; ++pos ){
+		for( var pos = m.start; pos <= m.end; ++pos ){
 
 		    this.clearChar( pos, t );
 		}
-	    }
-
+	    } );
 	} );
 
 	this.clearMark();

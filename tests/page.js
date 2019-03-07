@@ -859,5 +859,77 @@ describe( "Page", function(){
 
 	} );
 
+	it( "highlights non-contiguous regions", function( done ){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+
+	    var page = new TextPage( text, lineLength );
+
+	    page.setMark( "subject" );
+	    page.cursorRight( 3 );
+	    page.unsetMark( "subject" );
+
+	    page.cursorRight( 1 );
+
+	    page.setMark( "subject" );
+	    page.cursorRight( 3 );
+	    page.unsetMark( "subject" );
+
+	    page.onpersist = marks => {
+
+		var textMarkup = marks[ "subject" ];
+
+		assert.equal( 2, textMarkup.length );
+
+		var start0 = textMarkup[ 0 ].start;
+		var end0 = textMarkup[ 0 ].end;
+
+		assert.equal( text.slice( start0, end0 ), "the" );
+
+		var start1 = textMarkup[ 1 ].start;
+		var end1 = textMarkup[ 1 ].end;
+
+		assert.equal( text.slice( start1, end1 ), "cat" );
+		done();
+	    };
+
+	    page.persistMarks();
+
+	} );
+
+	it( "clears all regions on done", function( done ){
+
+	    var text = "the cat sat on the mat.";
+	    var lineLength = 10;
+
+	    var page = new TextPage( text, lineLength );
+
+	    page.setMark( "subject" );
+	    page.cursorRight( 3 );
+	    page.unsetMark( "subject" );
+
+	    page.cursorRight( 1 );
+
+	    page.setMark( "subject" );
+	    page.cursorRight( 3 );
+	    page.unsetMark( "subject" );
+
+	    page.onpersist = marks => {
+
+		assert.isTrue( true );
+	    };
+
+	    page.persistMarks();
+
+	    page.pageBox.charBoxes.forEach( c => {
+
+		assert.isFalse( c.element
+				.classList
+				.contains( "subjectMark" ) );
+	    } );
+	    done();
+	} );
+
     } );
 } );

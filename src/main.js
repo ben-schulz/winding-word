@@ -87,9 +87,12 @@ textLoader.onload = text => {
 
     var page = new TextPage( text );
 
+    Annotations.original = page.pageBox.text.join( "" );
+    Annotations.created = Date.now();
     page.onpersist = mark => {
 
 	Annotations.marks.push( mark );
+	Annotations.created = Date.now();
     };
 
     var pageHandlers = bindHandlers( page );
