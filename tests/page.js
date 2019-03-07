@@ -809,8 +809,12 @@ describe( "Page", function(){
 
 	    page.onpersist = marks => {
 
-		var start = marks[ "text" ].start;
-		var end = marks[ "text" ].end;
+		var textMarkup = marks[ "text" ];
+
+		assert.equal( 1, textMarkup.length );
+
+		var start = textMarkup[ 0 ].start;
+		var end = textMarkup[ 0 ].end;
 
 		assert.equal( text.slice( start, end ), "cat sat" );
 		done();
@@ -840,8 +844,12 @@ describe( "Page", function(){
 
 	    page.onpersist = marks => {
 
-		var start = marks[ "text" ].start;
-		var end = marks[ "text" ].end;
+		var textMarkup = marks[ "text" ];
+
+		assert.equal( 1, textMarkup.length );
+
+		var start = textMarkup[ 0 ].start;
+		var end = textMarkup[ 0 ].end;
 
 		assert.equal( text.slice( start, end ), "cat sat" );
 		done();
