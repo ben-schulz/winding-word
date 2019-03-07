@@ -13,6 +13,9 @@ var keyMap = {
     "a": "moveLeft",
     "d": "moveRight",
 
+    "q": "wordLeft",
+    "e": "wordRight",
+
     "m": "setMark",
     "u": "setSubject",
     "i": "setRelation",
@@ -30,6 +33,9 @@ var bindHandlers = function( page ){
 	"moveDown": _ => page.cursorDown(),
 	"moveLeft": _ => page.cursorLeft(),
 	"moveRight": _ => page.cursorRight(),
+
+	"wordLeft": _ => page.wordLeft(),
+	"wordRight": _ => page.wordRight(),
 
 	"setMark": _ => page.setMark( "text" ),
 	"setSubject": _ => page.setMark( "subject" ),

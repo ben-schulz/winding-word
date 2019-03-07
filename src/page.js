@@ -476,6 +476,59 @@ class TextPage{
 	this.markEndPos = Math.max( this.markEndPos - count, 0 );
     }
 
+    wordRight(){
+
+	if( this.cursorCol == this.pageBox.lastPos ){
+
+	    return;
+	}
+
+	this.cursorRight();
+	while( " " == this.cursorText ){
+
+	    this.cursorRight();
+	}
+
+	var prevPos = this.cursorPos - 1;
+	while( this.cursorText != " "
+	       && prevPos != this.cursorPos ){
+
+	    prevPos = this.cursorPos;
+	    this.cursorRight();
+	}
+
+	if( this.cursorPos < this.pageBox.lastPos ){
+	    this.cursorLeft();
+	}
+
+    }
+
+    wordLeft(){
+
+	if( 0 == this.cursorCol ){
+
+	    return;
+	}
+
+	this.cursorLeft();
+	while( " " == this.cursorText ){
+
+	    this.cursorLeft();
+	}
+
+	var prevPos = this.cursorPos + 1;
+	while( this.cursorText != " "
+	       && prevPos != this.cursorPos ){
+
+	    prevPos = this.cursorPos;
+	    this.cursorLeft();
+	}
+
+	if( 1 < this.cursorPos ){
+	    this.cursorRight();
+	}
+    }
+
     highlightChar( pos ){
 
 	this.pageBox.charBoxes[ pos ]
