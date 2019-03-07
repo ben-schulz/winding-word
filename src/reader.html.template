@@ -21,6 +21,9 @@
       </span>
     </div>
 
+    <div id="controlPanel">
+    </div>
+
   </body>
 
   <script src="./app.js"
