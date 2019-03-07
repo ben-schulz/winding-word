@@ -210,6 +210,7 @@ class PageBox{
     constructor( lexerOutput ){
 
 	this.element = document.createElement( "div" );
+	this.element.classList.add( "textReader" );
 
 	this.lines = [];
 	this.lineEnds = [];

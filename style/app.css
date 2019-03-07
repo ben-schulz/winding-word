@@ -4,6 +4,18 @@
     font-size: 10pt;
 }
 
+.textReader{
+
+    color: #040404;
+    background-color: #fcfcfc;
+
+    line-height: 1.6;
+    font-size: 18px;
+
+    max-width: 650px;
+    margin: 40px auto;
+}
+
 .textloader{
 
     width: 180px;
