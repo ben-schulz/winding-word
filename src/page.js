@@ -36,6 +36,18 @@ class CharBox{
     setCursor(){
 
 	this.element.id = "cursor";
+
+	var rect = this.element.getBoundingClientRect();
+
+	if( 0 >= rect.top ){
+
+	    window.scrollBy( 0, -window.innerHeight + 40 );
+	}
+
+	if( window.innerHeight <= rect.bottom ){
+
+	    window.scrollBy( 0, window.innerHeight - 40 );
+	}
     }
 
     clearCursor(){

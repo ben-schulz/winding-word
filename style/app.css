@@ -1,3 +1,7 @@
+body{
+    background-color: #f3f3f3;
+}
+
 #buildinfo{
 
     font-family: monospace;
@@ -7,7 +11,6 @@
 .textReader{
 
     color: #040404;
-    background-color: #fcfcfc;
 
     line-height: 1.6;
     font-size: 18px;
