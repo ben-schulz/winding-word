@@ -635,9 +635,10 @@ class TextPage{
 
 	    if( slice.isClosed ){
 
-		output[ t ] =
-		    this.pageBox.textSlice(
-			slice.start, slice.end );
+		output[ t ] = {
+		    "start": slice.start,
+		    "end": slice.end
+		};
 	    }
 	} );
 
