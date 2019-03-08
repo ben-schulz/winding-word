@@ -33,6 +33,15 @@ class CharBox{
 	return this.element.innerText;
     }
 
+    centerHere(){
+
+	var rect = this.element.getBoundingClientRect();
+
+	var deltaY = ( rect.top - 0.5 * window.innerHeight );
+
+	window.scrollBy( 0, deltaY );
+    }
+
     setCursor(){
 
 	this.element.id = "cursor";
@@ -540,6 +549,11 @@ class TextPage{
 	if( 1 < this.cursorPos ){
 	    this.cursorRight();
 	}
+    }
+
+    centerHere(){
+
+	this.cursorBox.centerHere();
     }
 
     highlightChar( pos ){

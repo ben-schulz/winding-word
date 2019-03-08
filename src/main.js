@@ -16,6 +16,8 @@ var keyMap = {
     "q": "wordLeft",
     "e": "wordRight",
 
+    "l": "centerHere",
+
     "m": "toggleMark",
     "u": "toggleSubject",
     "i": "toggleRelation",
@@ -35,6 +37,8 @@ var bindHandlers = function( page ){
 
 	"wordLeft": _ => page.wordLeft(),
 	"wordRight": _ => page.wordRight(),
+
+	"centerHere": _ => page.centerHere(),
 
 	"toggleMark": _ => page.toggleMark( "text" ),
 	"toggleSubject": _ => page.toggleMark( "subject" ),
