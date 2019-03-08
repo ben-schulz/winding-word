@@ -159,8 +159,8 @@ rereadButton.onload = markup => {
     document.body.appendChild( page.element );
 };
 
-var keyLegend = document.createElement( "table" );
-keyLegend.id = "keyLegend";
+
+var keyLegend = document.getElementById( "keyLegend" );
 
 var makeDocCell = function( key, val ){
 
@@ -205,5 +205,3 @@ for( var ix = 0; ix < keys.length; ix += 3 ){
 
     keyLegend.appendChild( row );
 }
-
-document.body.appendChild( keyLegend );

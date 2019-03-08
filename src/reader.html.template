@@ -21,8 +21,13 @@
       </span>
     </div>
 
-    <div id="controlPanel">
-    </div>
+    <table>
+      <tr>
+	<td><div id="controlPanel"></div></td>
+
+	<td><div id="keyLegend"></div></td>
+      </tr>
+    </table>
 
   </body>
 
