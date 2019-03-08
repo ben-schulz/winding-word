@@ -85,6 +85,12 @@ controls.appendChild( textLoader.element );
 
 textLoader.onload = text => {
 
+    var currentText = document.getElementById( "mainText" );
+    if( currentText ){
+
+	document.body.removeChild( currentText );
+    }
+
     var page = new TextPage( text );
 
     Annotations.original = page.pageBox.text.join( "" );
@@ -100,6 +106,7 @@ textLoader.onload = text => {
 
     bindKeyboardEvents( keyHandlers );
 
+    page.element.id = "mainText";
     document.body.appendChild( page.element );
 };
 
@@ -110,6 +117,47 @@ controls.appendChild( jsonDownloader.element );
 
 jsonDownloader.value = Annotations;
 
+var rereadButton = new TextLoader( "reread saved markup" );
+rereadButton.element.id = "rereadButton";
+rereadButton.element.classList.remove( "textloader" );
+controls.appendChild( rereadButton.element );
+
+rereadButton.onload = markup => {
+
+    var currentText = document.getElementById( "mainText" );
+    if( currentText ){
+
+	document.body.removeChild( currentText );
+    }
+
+    var obj = JSON.parse( markup );
+    var page = new TextPage( obj.original );
+
+    obj.marks.forEach( m => {
+
+	Object.keys( m ).forEach( k => {
+
+	    var entries = m[ k ];
+	    entries.forEach( e => {
+
+		var start = e.start;
+		var end = e.end;
+
+		for( var pos = start; pos < end; ++pos ){
+		    page.pageBox.charBoxes[ pos ].setHighlight( k );
+		}
+	    } );
+	} );
+    } );
+
+    var pageHandlers = bindHandlers( page );
+    var keyHandlers = bindKeys( pageHandlers );
+
+    bindKeyboardEvents( keyHandlers );
+
+    page.element.id = "mainText";
+    document.body.appendChild( page.element );
+};
 
 var keyLegend = document.createElement( "table" );
 keyLegend.id = "keyLegend";

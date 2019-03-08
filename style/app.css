@@ -12,7 +12,7 @@ body{
 
     position: relative;
     top: 30px;
-    left: 15%;
+    left: 5%;
 
     min-height: 40px;
     min-width: 300px;
@@ -52,6 +52,27 @@ body{
     padding-bottom: 20px;
 
     background-color: #767fe6;
+
+    font-family: sans-serif;
+    font-weight: bold;
+    color: white;
+
+    cursor: pointer;
+}
+
+#rereadButton{
+
+    width: 80px;
+    height: 40px;
+
+    display: inline;
+
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    background-color: #69b56c;
 
     font-family: sans-serif;
     font-weight: bold;
