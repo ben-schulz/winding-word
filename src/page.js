@@ -88,7 +88,7 @@ class WordBox{
 
 	for( var ix = 0; ix < word.text.length; ++ix ){
 
-	    if( word.isPrintable ){
+	    if( !Patterns.singleSpace.test( word.text[ ix ] ) ){
 		var c = word.text[ ix ];
 	    }
 	    else{

@@ -3,6 +3,7 @@ var Patterns = (function(){
 
 	"singleAlphaNum": /^[a-zA-Z0-9]$/,
 	"alphanumOnly": /^[a-zA-Z0-9]+$/,
+	"singleSpace": /^\s$/,
 	"spaceOnly": /^\s+$/,
 	"isPrintable": /^\S+$/,
     };
