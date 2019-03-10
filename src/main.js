@@ -147,10 +147,9 @@ rereadButton.onload = markup => {
 		var start = e.start;
 		var end = e.end;
 
-		for( var pos = start; pos < end; ++pos ){
-		    page.pageBox.charBoxes[ pos ].setHighlight( k );
-		}
+		page.highlightInterval( k, start, end );
 	    } );
+
 	} );
     } );
 

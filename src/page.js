@@ -636,6 +636,13 @@ class TextPage{
 	this.markEndPos = null;
     }
 
+    highlightInterval( type, start, end ){
+
+	for( var pos = start; pos < end; ++pos ){
+	    this.pageBox.charBoxes[ pos ].setHighlight( type );
+	}
+    }
+
     get markedText(){
 
 	var slice =
