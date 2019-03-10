@@ -661,7 +661,8 @@ class TextPage{
 	var output = {};
 	this.markTypes.forEach( t => {
 
-	    if( null === this.activeMarks[ t ].end ){
+	    if( undefined !== this.activeMarks[ t ]
+		&& null === this.activeMarks[ t ].end ){
 
 		var start = this.activeMarks[ t ].start;
 		var end = this.cursorPos;
@@ -747,6 +748,12 @@ class TextPage{
 
 	this.activeMarks = {};
 	this.closedMarks = {};
+
+	this.markTypes.forEach( t => {
+
+	    this.activeMarks[ t ] = [];
+	    this.closedMarks[ t ] = [];
+	} );
 
 	this.onpersist = null;
 	this._highlightedText = [];
