@@ -1,35 +1,4 @@
-var annotations = new Annotation();
-
-var cycleAndRedisplay = function( page, annotations ){
-
-    return _ => {
-
-	page.clearAll();
-	annotations.cycleSubject();
-
-	Object.keys( annotations.currentSubject )
-	    .forEach( k => {
-
-	    var entries = annotations.currentSubject[ k ];
-	    entries.forEach( e => {
-
-		var start = e.start;
-		var end = e.end;
-
-		page.highlightInterval( k, start, end );
-	    } );
-	} );
-    };
-};
-
-var addSubjectAndRedisplay = function( page, annotations ){
-
-    return _ => {
-
-	page.clearAll();
-	annotations.addSubject();
-    };
-};
+var reader = null;
 
 var keyMap = {
 
@@ -54,48 +23,6 @@ var keyMap = {
     "Enter": "persistMarks",
     "Escape": "clearAll"
 };
-
-var bindHandlers = function( page, annotations ){
-
-    return {
-	"moveUp": _ => page.cursorUp(),
-	"moveDown": _ => page.cursorDown(),
-	"moveLeft": _ => page.cursorLeft(),
-	"moveRight": _ => page.cursorRight(),
-
-	"wordLeft": _ => page.wordLeft(),
-	"wordRight": _ => page.wordRight(),
-
-	"centerHere": _ => page.centerHere(),
-
-	"toggleMark": _ => page.toggleMark( "text" ),
-	"toggleSubject": _ => page.toggleMark( "subject" ),
-	"toggleRelation": _ => page.toggleMark( "relation" ),
-	"toggleObject": _ => page.toggleMark( "object" ),
-
-	"unsetMark": _ => page.unsetMark(),
-
-	"persistMarks": _ => page.persistMarks(),
-	"clearAll": _ => page.clearAll(),
-
-	"cycleSubject": cycleAndRedisplay( page, annotations ),
-	"addSubject": addSubjectAndRedisplay( page, annotations )
-    };
-};
-
-var bindKeys = function( handlers ){
-
-    var result = {};
-    Object.keys( keyMap ).forEach( key => {
-
-	var actionName = keyMap[ key ];
-
-	result[ key ] = handlers[ actionName ];
-    } );
-
-    return result;
-};
-
 
 var bindKeyboardEvents = function( handlers ){
 
@@ -127,28 +54,24 @@ textLoader.onload = text => {
     }
 
     var page = new TextPage( text );
+    var annotations = new Annotation();
 
     annotations.original = page.pageBox.text.join( "" );
-    page.onpersist = mark => {
 
-	annotations.pushMarksToCurrent( mark );
-    };
-
-    var pageHandlers = bindHandlers( page, annotations );
-    var keyHandlers = bindKeys( pageHandlers );
-
-    bindKeyboardEvents( keyHandlers );
+    reader = new Reader( page, annotations );
+    reader.bindKeys( keyMap );
+    bindKeyboardEvents( reader.keyDispatch );
 
     page.element.id = "mainText";
     document.body.appendChild( page.element );
+
+    jsonDownloader.value = reader.annotations;
 };
-
-
 
 var jsonDownloader = new JsonDownload();
 controls.appendChild( jsonDownloader.element );
 
-jsonDownloader.value = annotations;
+jsonDownloader.value = {};
 
 var rereadButton = new TextLoader( "reread saved markup" );
 rereadButton.element.id = "rereadButton";
@@ -165,25 +88,21 @@ rereadButton.onload = markup => {
 
     var obj = JSON.parse( markup );
 
-    annotations = new Annotation();
+    var annotations = new Annotation();
     annotations.marks = obj.marks;
     annotations.original = obj.original;
     annotations.created = obj.created;
 
     var page = new TextPage( annotations.original );
 
-    page.onpersist = mark => {
-
-	annotations.pushMarksToCurrent( mark );
-    };
-
-    var pageHandlers = bindHandlers( page, annotations );
-    var keyHandlers = bindKeys( pageHandlers );
-
-    bindKeyboardEvents( keyHandlers );
+    reader = new Reader( page, annotations );
+    reader.bindKeys( keyMap );
+    bindKeyboardEvents( reader.keyDispatch );
 
     page.element.id = "mainText";
     document.body.appendChild( page.element );
+
+    jsonDownloader.value = reader.annotations;
 };
 
 
