@@ -135,14 +135,8 @@ describe( "Reader main", function(){
 
 	    reader.addSubjectAndRedisplay();
 
-	    for( var pos = 0; pos < 3; ++pos ){
-
-		assert.isFalse( reader.page.pageBox
-				.charBoxes[ pos ]
-				.element
-				.classList
-				.contains( "subjectMark" ) );
-	    }
+	    assertMarkClearOnInterval(
+		page, "subjectMark", 0, 3 );
 
 	    reader.page.cursorRight( 1 );
 
@@ -152,15 +146,8 @@ describe( "Reader main", function(){
 
 	    reader.page.persistMarks();
 
-	    for( var pos = 4; pos < 7; ++pos ){
-
-		assert.isTrue( reader.page.pageBox
-				.charBoxes[ pos ]
-				.element
-				.classList
-				.contains( "subjectMark" ) );
-	    }
-
+	    assertMarkSetOnInterval(
+		page, "subjectMark", 4, 7 );
 	} );
 
     } );
