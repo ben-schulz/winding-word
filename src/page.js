@@ -699,7 +699,13 @@ class TextPage{
 
     get markTypes(){
 
-	return Object.keys( this.activeMarks );
+	return [
+
+	    "text",
+	    "subject",
+	    "object",
+	    "relation"
+	];
     }
 
     clearAll(){

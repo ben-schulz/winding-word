@@ -89,7 +89,13 @@ rereadButton.onload = markup => {
     var obj = JSON.parse( markup );
 
     var annotations = new Annotation();
-    annotations.marks = obj.marks;
+
+    obj.marks.forEach( m => {
+
+	annotations.pushMarksToCurrent( m );
+	annotations.addSubject();
+    } );
+
     annotations.original = obj.original;
     annotations.created = obj.created;
 
