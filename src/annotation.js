@@ -10,6 +10,17 @@ class Annotation{
 	return this.marks[ this._markBucket ];
     }
 
+    pushMarksToCurrent( mark ){
+
+	Object.keys( mark ).forEach( t => {
+
+	    this.pushToCurrent( t, mark[ t ] );
+	} );
+
+	this.updateTimeStamp();
+
+    }
+
     pushToCurrent( key, value ){
 
 	if( undefined === this.currentSubject[ key ] ){
@@ -36,12 +47,15 @@ class Annotation{
 
     addSubject(){
 
+	console.info( this.marks.length );
+
 	this.marks.push( {} );
 	this._markBucket = this.marks.length - 1;
     }
 
     cycleSubject(){
 
+	console.info( this._markBucket );
 	if( this._markBucket == this.marks.length - 1 ){
 
 	    this._markBucket = 0;

@@ -56,7 +56,7 @@ var keyMap = {
     "Escape": "clearAll"
 };
 
-var bindHandlers = function( page ){
+var bindHandlers = function( page, annotations ){
 
     return {
 	"moveUp": _ => page.cursorUp(),
@@ -132,15 +132,10 @@ textLoader.onload = text => {
     annotations.original = page.pageBox.text.join( "" );
     page.onpersist = mark => {
 
-	Object.keys( mark ).forEach( t => {
-
-	    annotations.pushToCurrent( t, mark[ t ] );
-	} );
-
-	annotations.updateTimeStamp();
+	annotations.pushMarksToCurrent( mark );
     };
 
-    var pageHandlers = bindHandlers( page );
+    var pageHandlers = bindHandlers( page, annotations );
     var keyHandlers = bindKeys( pageHandlers );
 
     bindKeyboardEvents( keyHandlers );
@@ -170,25 +165,20 @@ rereadButton.onload = markup => {
     }
 
     var obj = JSON.parse( markup );
-    var page = new TextPage( obj.original );
 
-    obj.marks.forEach( m => {
+    annotations = new Annotation();
+    annotations.marks = obj.marks;
+    annotations.original = obj.original;
+    annotations.created = obj.created;
 
-	Object.keys( m ).forEach( k => {
+    var page = new TextPage( annotations.original );
 
-	    var entries = m[ k ];
-	    entries.forEach( e => {
+    page.onpersist = mark => {
 
-		var start = e.start;
-		var end = e.end;
+	annotations.pushMarksToCurrent( mark );
+    };
 
-		page.highlightInterval( k, start, end );
-	    } );
-
-	} );
-    } );
-
-    var pageHandlers = bindHandlers( page );
+    var pageHandlers = bindHandlers( page, annotations );
     var keyHandlers = bindKeys( pageHandlers );
 
     bindKeyboardEvents( keyHandlers );
