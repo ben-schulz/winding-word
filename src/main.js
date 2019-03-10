@@ -1,10 +1,4 @@
-var Annotations = ( function(){
-
-    return {
-	"marks":[]
-    }
-
-}() );
+var annotations = new Annotation();
 
 var keyMap = {
 
@@ -97,12 +91,12 @@ textLoader.onload = text => {
 
     var page = new TextPage( text );
 
-    Annotations.original = page.pageBox.text.join( "" );
-    Annotations.created = Date.now();
+    annotations.original = page.pageBox.text.join( "" );
+    annotations.created = Date.now();
     page.onpersist = mark => {
 
-	Annotations.marks.push( mark );
-	Annotations.created = Date.now();
+	annotations.marks.push( mark );
+	annotations.created = Date.now();
     };
 
     var pageHandlers = bindHandlers( page );
@@ -119,7 +113,7 @@ textLoader.onload = text => {
 var jsonDownloader = new JsonDownload();
 controls.appendChild( jsonDownloader.element );
 
-jsonDownloader.value = Annotations;
+jsonDownloader.value = annotations;
 
 var rereadButton = new TextLoader( "reread saved markup" );
 rereadButton.element.id = "rereadButton";

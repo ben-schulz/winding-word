@@ -5,4 +5,5 @@ src/verse.js
 src/page.js
 src/keyboard.js
 src/keyDispatcher.js
+src/annotation.js
 src/main.js
