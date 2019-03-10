@@ -1,0 +1,6 @@
+class Reader{
+
+    constructor(){
+
+    }
+}

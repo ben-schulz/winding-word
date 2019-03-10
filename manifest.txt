@@ -6,4 +6,5 @@ src/page.js
 src/keyboard.js
 src/keyDispatcher.js
 src/annotation.js
+src/reader.js
 src/main.js

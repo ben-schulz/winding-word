@@ -1,6 +1,6 @@
 var annotations = new Annotation();
 
-var cycleAndRedisplay = function( page ){
+var cycleAndRedisplay = function( page, annotations ){
 
     return _ => {
 
@@ -22,12 +22,11 @@ var cycleAndRedisplay = function( page ){
     };
 };
 
-var addSubjectAndRedisplay = function( page ){
+var addSubjectAndRedisplay = function( page, annotations ){
 
     return _ => {
 
 	page.clearAll();
-
 	annotations.addSubject();
     };
 };
@@ -79,8 +78,8 @@ var bindHandlers = function( page, annotations ){
 	"persistMarks": _ => page.persistMarks(),
 	"clearAll": _ => page.clearAll(),
 
-	"cycleSubject": cycleAndRedisplay( page ),
-	"addSubject": addSubjectAndRedisplay( page )
+	"cycleSubject": cycleAndRedisplay( page, annotations ),
+	"addSubject": addSubjectAndRedisplay( page, annotations )
     };
 };
 
