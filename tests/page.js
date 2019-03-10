@@ -897,39 +897,5 @@ describe( "Page", function(){
 	    page.persistMarks();
 
 	} );
-
-	it( "clears all regions on done", function( done ){
-
-	    var text = "the cat sat on the mat.";
-	    var lineLength = 10;
-
-	    var page = new TextPage( text, lineLength );
-
-	    page.setMark( "subject" );
-	    page.cursorRight( 3 );
-	    page.unsetMark( "subject" );
-
-	    page.cursorRight( 1 );
-
-	    page.setMark( "subject" );
-	    page.cursorRight( 3 );
-	    page.unsetMark( "subject" );
-
-	    page.onpersist = marks => {
-
-		assert.isTrue( true );
-	    };
-
-	    page.persistMarks();
-
-	    page.pageBox.charBoxes.forEach( c => {
-
-		assert.isFalse( c.element
-				.classList
-				.contains( "subjectMark" ) );
-	    } );
-	    done();
-	} );
-
     } );
 } );

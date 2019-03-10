@@ -689,11 +689,12 @@ class TextPage{
 		}
 	    } );
 
+	    this.closedMarks[ t ] = [];
+	    this.activeMarks[ t ] = {};
 	} );
 
 	this.onpersist( output );
-
-	this.clearAll();
+	this.clearMark();
     }
 
     get markTypes(){
@@ -705,19 +706,17 @@ class TextPage{
 
 	this.markTypes.forEach( t => {
 
-	    this.closedMarks[ t ].forEach( m => {
+	    for( var pos = 0;
+		 pos <= this.pageBox.lastPos; ++pos ){
 
-		for( var pos = m.start; pos <= m.end; ++pos ){
+		this.clearChar( pos, t );
+	    }
 
-		    this.clearChar( pos, t );
-		}
-	    } );
+	    this.closedMarks[ t ] = [];
+	    this.activeMarks[ t ] = {};
 	} );
 
 	this.clearMark();
-
-	this.activeMarks = {};
-	this.closedMarks = {};
     }
 
     constructor( text, lineLength=60 ){

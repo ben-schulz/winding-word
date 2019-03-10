@@ -1,5 +1,37 @@
 var annotations = new Annotation();
 
+var cycleAndRedisplay = function( page ){
+
+    return _ => {
+
+	page.clearAll();
+	annotations.cycleSubject();
+
+	Object.keys( annotations.currentSubject )
+	    .forEach( k => {
+
+	    var entries = annotations.currentSubject[ k ];
+	    entries.forEach( e => {
+
+		var start = e.start;
+		var end = e.end;
+
+		page.highlightInterval( k, start, end );
+	    } );
+	} );
+    };
+};
+
+var addSubjectAndRedisplay = function( page ){
+
+    return _ => {
+
+	page.clearAll();
+
+	annotations.addSubject();
+    };
+};
+
 var keyMap = {
 
     "w": "moveUp",
@@ -16,6 +48,9 @@ var keyMap = {
     "u": "toggleSubject",
     "i": "toggleRelation",
     "o": "toggleObject",
+
+    "h": "cycleSubject",
+    "n": "addSubject",
 
     "Enter": "persistMarks",
     "Escape": "clearAll"
@@ -43,6 +78,9 @@ var bindHandlers = function( page ){
 
 	"persistMarks": _ => page.persistMarks(),
 	"clearAll": _ => page.clearAll(),
+
+	"cycleSubject": cycleAndRedisplay( page ),
+	"addSubject": addSubjectAndRedisplay( page )
     };
 };
 
@@ -92,11 +130,14 @@ textLoader.onload = text => {
     var page = new TextPage( text );
 
     annotations.original = page.pageBox.text.join( "" );
-    annotations.created = Date.now();
     page.onpersist = mark => {
 
-	annotations.marks.push( mark );
-	annotations.created = Date.now();
+	Object.keys( mark ).forEach( t => {
+
+	    annotations.pushToCurrent( t, mark[ t ] );
+	} );
+
+	annotations.updateTimeStamp();
     };
 
     var pageHandlers = bindHandlers( page );
